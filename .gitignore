@@ -1,0 +1,16 @@
+__pycache__
+*.log
+.idea
+virtualenv/
+/data/*
+/database/*
+*.iml
+*.cprof
+.vscode
+*.ipynb
+*.pyc
+/*.csv
+/.venv/*
+.DS_Store
+/graveyard/
+*/.mypy_cache

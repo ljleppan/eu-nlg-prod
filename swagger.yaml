@@ -1,0 +1,147 @@
+swagger: '2.0'
+info:
+  description: Automatically produces natural language news reports from EuroStat data.
+  title: EuroStat news NLG API
+  version: 0.1.0
+paths:
+  /languages:
+    options:
+      description: "Describes the available HTTP methods for this end point."
+      responses:
+        '200':
+          description: OK
+    get:
+      description: Returns a JSON array of language codes supported by the /eunlg endpoint.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            required:
+              - languages
+            properties:
+              languages:
+                type: array
+                items:
+                  type: string
+                example:
+                  - en
+                  - fi
+  /datasets:
+    options:
+      description: "Describes the available HTTP methods for this end point."
+      responses:
+        '200':
+          description: OK
+    get:
+      description: >-
+        Returns a JSON array of datasets supported by the /eunlg and /location
+        endpoints.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            required:
+              - datasets
+            properties:
+              datasets:
+                type: array
+                items:
+                  type: string
+                example:
+                  - cphi
+                  - env
+  /locations:
+    options:
+      description: "Describes the available HTTP methods for this end point."
+      responses:
+        '200':
+          description: OK
+    post:
+      description: >-
+        Query for valid locations supported by the /eunlg endpoint for a certain
+        dataset
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: dataset
+          description: An object containing any identifier returned by /datasets
+          schema:
+            type: object
+            required:
+              - dataset
+            properties:
+              dataset:
+                type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              locations:
+                type: array
+                items:
+                  type: string
+                example:
+                  - AT
+                  - ET
+  /eunlg:
+    options:
+      description: "Describes the available HTTP methods for this end point."
+      responses:
+        '200':
+          description: OK
+    post:
+      description: Generate a report
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: dataset
+          description: An object containing any identifier returned by /datasets
+          schema:
+            type: object
+            required:
+              - location
+              - dataset
+            properties:
+              dataset:
+                type: string
+              location:
+                type: string
+              language:
+                type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              location:
+                type: string
+                example: FI
+              location_type:
+                type: string
+                example: C
+              language:
+                type: string
+                example: en
+              header:
+                type: string
+                example: <h1>...</h1>
+              body:
+                type: string
+                example: <p>...</p>
+        '400':
+          description: Missing or invalid inputs

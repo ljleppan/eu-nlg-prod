@@ -1,0 +1,10 @@
+__pycache__
+*.log
+.idea
+virtualenv/
+data
+.git
+*.iml
+*.cprof
+.vscode
+.venv

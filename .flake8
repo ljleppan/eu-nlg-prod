@@ -1,0 +1,11 @@
+[flake8]
+ignore = E203, W503
+max-line-length = 120
+per-file-ignores =
+    # Ignore too long lines in dicts
+    eunlg/language/dictionary_*.py:E501
+    eunlg/resources/dictionary_*.py:E501
+    eunlg/*/language_constants.py:E501
+exclude =
+    .git
+    .venv
