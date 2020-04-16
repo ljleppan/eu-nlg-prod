@@ -1,13 +1,12 @@
 import argparse
 import logging.handlers
-import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, Union
 
 import bottle
 import yaml
-from bottle import TEMPLATE_PATH, Bottle, HTTPResponse, request, response, run
+from bottle import Bottle, HTTPResponse, request, response, run
 from bottle_swagger import SwaggerPlugin
 
 from service import EUNlgService
@@ -50,19 +49,22 @@ log.addHandler(rotating_file_handler)
 app = Bottle()
 service = EUNlgService(random_seed=4551546, force_cache_refresh=args.force_cache_refresh)
 
-TEMPLATE_PATH.insert(0, os.path.dirname(os.path.realpath(__file__)) + "/../views/")
-static_root = os.path.dirname(os.path.realpath(__file__)) + "/../static/"
-
 # Swagger
 with open(Path(__file__).parent / ".." / "swagger.yaml", "r") as file_handle:
     swagger_def = yaml.load(file_handle, Loader=yaml.FullLoader)
 app.install(SwaggerPlugin(swagger_def, serve_swagger_ui=True, swagger_ui_suburl="/documentation/"))
 
+# Allow for trailing slash in request URLS
+@app.hook("before_request")
+def strip_path():
+    # Needs to be special-cased for /documentation/ 'cause bottle-swagger is weird about it.
+    if "/documentation" not in request.environ["PATH_INFO"]:
+        request.environ["PATH_INFO"] = request.environ["PATH_INFO"].rstrip("/")
+
+
 #
 # END INIT
 #
-
-
 def allow_cors(opts):
     def decorator(func):
         """ this is a decorator which enables CORS for specified endpoint """
@@ -78,12 +80,6 @@ def allow_cors(opts):
         return wrapper
 
     return decorator
-
-
-@app.route("/documentation")
-@allow_cors(["POST", "OPTIONS"])
-def documentation() -> None:
-    bottle.redirect("/documentation/")
 
 
 @app.route("/eunlg", method=["POST", "OPTIONS"])
@@ -134,7 +130,7 @@ def locations() -> Union[HTTPResponse, Dict[str, Any]]:
     json = request.json
 
     if "dataset" not in json:
-        return HTTPResponse("Missing 'dataset' field", 400)
+        return HTTPResponse({"error": "Missing 'dataset' field"}, 400)
     dataset = json.get("dataset")
     if dataset not in service.get_datasets():
         return HTTPResponse({"error": "Invalid value for 'dataset', query /datasets for valid options."}, 400)
@@ -145,7 +141,7 @@ def locations() -> Union[HTTPResponse, Dict[str, Any]]:
 @app.route("/health", method=["GET", "OPTIONS"])
 @allow_cors(["GET", "OPTIONS"])
 def health() -> Dict[str, Any]:
-    return {"version": "v0.1.0"}
+    return {"version": "0.2.0"}
 
 
 def main() -> None:
