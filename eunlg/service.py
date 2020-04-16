@@ -79,8 +79,8 @@ class EUNlgService:
 
         def _get_components(headline=False):
             # Put together the list of components
-            # This varies depending on whether it's for headlines and whether we're using Omorphi
-            yield EUMessageGenerator()  # Don't expand facts for headlines!
+            # This varies depending on whether it's for headlines and which language we are doing stuff in
+            yield EUMessageGenerator()
             yield EUImportanceSelector()
             yield EUHeadlineDocumentPlanner() if headline else EUBodyDocumentPlanner()
             yield TemplateSelector()

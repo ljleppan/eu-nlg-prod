@@ -32,35 +32,60 @@ class GenericEuroStatPreprocessor(ABC):
     def _flatten(self, df: DataFrame) -> DataFrame:
         pass
 
+    def _comp_to_loc(
+        self, df: DataFrame, compare_columns: List[str], compare_location: str, col_format: str
+    ) -> DataFrame:
+        """
+        Add comparison columns that compare each location to a denoted comparison location in the same year.
+
+        This gets complicated to explain so buckle up, chief.
+
+        Basically, let's assume we are given a DataFrame like this as the param `df`:
+        ```
+          location  timestamp    a    b
+        0       EU       2020  NaN  NaN
+        1       FI       2020  0.0  1.0
+        2       FI       2019  1.0  2.0
+        3       SV       2020 -1.0  0.0
+        4       SV       2019  0.0  1.0
+        5       EU       2019  1.0  1.0
+        ```
+
+        Then, assuming further that `compare_columns = ["a", "b"]` and `compare_location = "EU"` and
+        `col_format = "{}_comp_eu"`, what we end up getting out looks like this:
+        ```
+          location  timestamp    a    b  a_comp_eu  b_comp_eu
+        0       EU       2020  NaN  NaN        NaN        NaN
+        1       FI       2020  0.0  1.0        NaN        NaN
+        2       FI       2019  1.0  2.0        0.0        1.0
+        3       SV       2020 -1.0  0.0        NaN        NaN
+        4       SV       2019  0.0  1.0       -1.0        0.0
+        5       EU       2019  1.0  1.0        NaN        NaN
+        ```
+
+        The actual processing is done timestamp-by-timestamp, with each step producing certain rows of the X_comp_eu
+        columns. These are finally concat'd together and then joined to initial table.
+        """
+        if compare_location not in df["location"].unique():
+            return df
+
+        comp_fragments = []
+        for timestamp in df["timestamp"].unique():
+            diff = (
+                df[(df["timestamp"] == timestamp) & (df["location"] != compare_location)][compare_columns]
+                - df[(df["timestamp"] == timestamp) & (df["location"] == compare_location)][
+                    compare_columns
+                ].values.squeeze()
+            )
+            diff.columns = [col_format.format(col) for col in diff]
+            comp_fragments.append(diff)
+        return df.join(pd.concat([*comp_fragments]))
+
     def _compare_to_us(self, df: DataFrame, compare_columns: List[str]) -> DataFrame:
-
-        us_df = df.loc[df["location"] == "US"]
-        df = df.drop(us_df.index)
-        df = pd.concat([us_df, df])
-
-        grouped_by_time = df.groupby("timestamp")
-
-        for col_name in compare_columns:
-            compared_col_name = "{}:comp_us".format(col_name)
-            grouped = grouped_by_time[col_name]
-            df[compared_col_name] = df[col_name] - grouped.transform("first")
-
-        return df
+        return self._comp_to_loc(df, compare_columns, "US", "{}:comp_us")
 
     def _compare_to_eu(self, df: DataFrame, compare_columns: List[str]) -> DataFrame:
-
-        eu_df = df.loc[df["location"] == "EU"]
-        df = df.drop(eu_df.index)
-        df = pd.concat([eu_df, df])
-
-        grouped_by_time = df.groupby("timestamp")
-
-        for col_name in compare_columns:
-            compared_col_name = "{}:comp_eu".format(col_name)
-            grouped = grouped_by_time[col_name]
-            df[compared_col_name] = df[col_name] - grouped.transform("first")
-
-        return df
+        return self._comp_to_loc(df, compare_columns, "EU28", "{}:comp_eu")
 
     def _compare_to_similar(self, df: DataFrame, cluster_df: DataFrame, compare_columns: List[str]) -> DataFrame:
 

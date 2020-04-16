@@ -63,7 +63,7 @@ class EnvPreprocessor(GenericEuroStatPreprocessor):
 
         new_df["location_type"] = location_type
         new_df["timestamp_type"] = timestamp_type
-
-        print(new_df)
+        new_df["agent"] = "none"
+        new_df["agent_type"] = "passive"
 
         return new_df

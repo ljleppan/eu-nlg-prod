@@ -6,7 +6,7 @@ from core.models import Message
 
 log = logging.getLogger("root")
 
-MAX_PARAGRAPHS = 5
+MAX_PARAGRAPHS = 3
 
 MAX_SATELLITES_PER_NUCLEUS = 7
 MIN_SATELLITES_PER_NUCLEUS = 4

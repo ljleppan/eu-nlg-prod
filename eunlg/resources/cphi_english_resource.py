@@ -6,41 +6,41 @@ from resources.tabular_data_resource import TabularDataResource
 TEMPLATES: str = """
 # PRESENT VALUE
 
-en: [in {location},] {value_type} was {value} {unit} [in {time}]
+en: [in {location},] the {value_type} was {value} {unit} [in {time}]
 en: [in {location},] it was {value} {unit} [in {time}]
 en-head: in {location}, in {time}, {value_type} was {value} {unit}
 | value_type = cphi:.*, value_type != .*:rank.*, value_type != _*.:comp_.*
 
 # SINGLE VALUE COMP EU
 
-en: [in {location},] {value_type} was {value} {unit} more than the EU average [in {time}]
+en: [in {location},] the {value_type} was {value} {unit} more than the EU average [in {time}]
 en: [in {location},] it was {value} {unit} more than the EU average [in {time}]
 en-head: in {location}, in {time}, {value_type} at {value} {unit} over EU average
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value > 0
 
-en: [in {location},] {value_type} was {value, abs} {unit} less than the EU average [in {time}]
+en: [in {location},] the {value_type} was {value, abs} {unit} less than the EU average [in {time}]
 en: [in {location},] it was {value, abs} {unit} less than the EU average [in {time}]
 en-head: in {location}, in {time}, {value_type} at {value, abs} {unit} below EU average
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value < 0
 
-en: [in {location},] {value_type} was the same as the EU average [in {time}]
+en: [in {location},] the {value_type} was the same as the EU average [in {time}]
 en: [in {location},] it was the same as the EU average [in {time}]
 en-head: in {location}, in {time}, {value_type} tied with EU average
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value = 0.0
 
 # SINGLE VALUE COMP US
 
-en: [in {location},] {value_type} was {value} {unit} more than in US [in {time}]
+en: [in {location},] the {value_type} was {value} {unit} more than in US [in {time}]
 en: [in {location},] it was {value} {unit} more than in US [in {time}]
 en-head: in {location}, in {time}, {value_type} at {value} {unit} over US
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value > 0
 
-en: [in {location},] {value_type} was {value, abs} {unit} less than in US [in {time}]
+en: [in {location},] the {value_type} was {value, abs} {unit} less than in US [in {time}]
 en: [in {location},] it was {value, abs} {unit} less than in US [in {time}]
 en-head: in {location}, in {time}, {value_type} at {value, abs} {unit} below US
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value < 0
 
-en: [in {location},] {value_type} was the same as in US [in {time}]
+en: [in {location},] the {value_type} was the same as in US [in {time}]
 en: [in {location},] it was the same as in US [in {time}]
 en-head: in {location}, in {time}, {value_type} tied with US
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value = 0.0
@@ -61,9 +61,9 @@ en-head: in {time}, {location, case=gen} {value, ord} {value_type} lowest
 """
 
 INDEX_CATEGORIES: Dict[str, str] = {
-    "hicp2015": "the harmonized consumer price index",  # harmonized consumer price index (2015=100)
-    "rt1": "the monthly growth rate",  # growth rate on previous period (t/t-1)
-    "rt12": "the yearly growth rate",  # growth rate (t/t-12)
+    "hicp2015": "harmonized consumer price index",  # harmonized consumer price index (2015=100)
+    "rt1": "monthly growth rate",  # growth rate on previous period (t/t-1)
+    "rt12": "yearly growth rate",  # growth rate (t/t-12)
     "cp-hi00": "'all items'",
     "cp-hi01": "'food and non-alcoholic beverages'",
     "cp-hi02": "'alcoholic beverages and tobacco'",
@@ -113,32 +113,27 @@ MAYBE_RANK_OR_COMP = ":?(rank|rank_reverse|comp_eu|comp_us)?"
 
 class EnglishCphiRawRealizer(RegexRealizer):
     def __init__(self, registry):
-        # "the harmonized consumer price index for the category 'health'
         super().__init__(
-            registry, "en", r"^cphi:([^:]*):([^:]*)" + MAYBE_RANK_OR_COMP + "$", (1, 2), "{} for the category {}"
+            registry, "en", r"^cphi:([^:]*):([^:]*)" + MAYBE_RANK_OR_COMP + "$", "the {} for the category {}"
         )
 
 
 class EnglishCphiChangeRealizer(RegexRealizer):
     def __init__(self, registry):
-        # "the monthly growth rate of the harmonized consumer price index for the category 'health'
         super().__init__(
             registry,
             "en",
             r"^cphi:([^:]*):([^:]*):(rt12?)" + MAYBE_RANK_OR_COMP + "$",
-            (3, 1, 2),
-            "{} of {} for the category {}",
+            "{2} of the {0} for the category {1}",
         )
 
 
 class EnglishUnitCphiPercentageRealizer(RegexRealizer):
     def __init__(self, registry):
-        # "the monthly growth rate of the harmonized consumer price index for the category 'health'
         super().__init__(
             registry,
             "en",
             r"^\[UNIT:cphi:.*\]$",
-            (),
             "percentage points",
             slot_requirements=lambda slot: "rt1" in slot.value.split(":") or "rt12" in slot.value.split(":"),
         )
@@ -146,12 +141,10 @@ class EnglishUnitCphiPercentageRealizer(RegexRealizer):
 
 class EnglishUnitCphiPointsRealizer(RegexRealizer):
     def __init__(self, registry):
-        # "the monthly growth rate of the harmonized consumer price index for the category 'health'
         super().__init__(
             registry,
             "en",
             r"^\[UNIT:cphi:.*\]$",
-            (),
             "points",
             slot_requirements=lambda slot: "rt1" not in slot.value.split(":") and "rt12" not in slot.value.split(":"),
         )

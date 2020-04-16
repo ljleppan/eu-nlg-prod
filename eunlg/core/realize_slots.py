@@ -108,7 +108,6 @@ class RegexRealizer(SlotRealizerComponent):
         registry: Registry,
         languages: Union[str, List[str]],
         regex: str,
-        extracted_groups: Union[int, Iterable[int]],
         template: Union[str, Iterable[str]],
         group_requirements: Optional[Callable[..., bool]] = None,
         slot_requirements: Optional[Callable[[Slot], bool]] = None,
@@ -117,7 +116,6 @@ class RegexRealizer(SlotRealizerComponent):
         self.registry = registry
         self.languages = languages if isinstance(languages, list) else [languages]
         self.regex = regex
-        self.extracted_groups = extracted_groups if isinstance(extracted_groups, Iterable) else [extracted_groups]
         self.templates = [template] if isinstance(template, str) else template
         self.group_requirements = group_requirements
         self.slot_requirements = slot_requirements
@@ -136,10 +134,8 @@ class RegexRealizer(SlotRealizerComponent):
         if not match:
             return False, []
 
-        groups = [match.group(i) for i in self.extracted_groups]
-
         # Check that the requirements placed on the groups are fulfilled
-        if self.group_requirements is not None and not self.group_requirements(*groups):
+        if self.group_requirements is not None and not self.group_requirements(*match.groups()):
             return False, []
 
         # Check that the requirements placed on the slot are fulfilled
@@ -149,7 +145,7 @@ class RegexRealizer(SlotRealizerComponent):
         template = random.choice(self.templates)
         log.debug("'Template: {}".format(template))
 
-        string_realization = template.format(*groups)
+        string_realization = template.format(*match.groups())
         log.debug("String realization: {}".format(string_realization))
 
         components = []

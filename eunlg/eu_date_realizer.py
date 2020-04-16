@@ -95,8 +95,8 @@ class EUDateRealizer(NLGPipelineComponent):
         prev_year = None
         if re.match(r"\[TIME:month:(\d+)M(\d+)\]", previous):
             prev_year = re.match(r"\[TIME:month:(\d+)M(\d+)\]", previous).groups(0)
-        elif re.match(r"\[TIME:year:(\d+)M(\d+)\]", previous):
-            prev_year = re.match(r"\[TIME:month:(\d+)M(\d+)\]", previous).groups()[0]
+        elif re.match(r"\[TIME:year:(\d+)\]", previous):
+            prev_year = re.match(r"\[TIME:month:(\d+)\]", previous).groups()[0]
 
         if this_year == prev_year:
             return self.vocab["month-expression"].format(month=self.vocab["month"][this_month])
@@ -107,7 +107,7 @@ class EUDateRealizer(NLGPipelineComponent):
         if previous and this.value == previous:
             return self.vocab["year"]["reference_options"]
 
-        this_year = re.match(r"\[TIME:year:(\d+)\]", this.value).groups()
+        this_year = re.match(r"\[TIME:year:(\d+)\]", this.value).groups()[0]
 
         return self.vocab["year-expression"].format(year=this_year)
 
