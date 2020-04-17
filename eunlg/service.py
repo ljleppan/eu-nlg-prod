@@ -27,7 +27,10 @@ from eu_number_realizer import EUNumberRealizer
 from finnish_uralicNLP_morphological_realizer import FinnishUralicNLPMorphologicalRealizer
 from resources.conjunctions_resource import CONJUNCTIONS
 from resources.cphi_english_resource import CPHIEnglishResource
+from resources.env_english_resource import ENVEnglishResource
 from resources.error_resource import ERRORS
+from resources.health_cost_english_resource import HealthCostEnglishResource
+from resources.health_funding_english_resource import HealthFundingEnglishResource
 
 log = logging.getLogger("root")
 
@@ -50,7 +53,7 @@ class EUNlgService:
         # DataSets
         DATA_ROOT = Path(__file__).parent.absolute() / ".." / "data"
 
-        self.datasets = ["cphi"]
+        self.datasets = ["cphi", "env", "health_cost", "health_funding"]
         for dataset in self.datasets:
             cache_path: Path = (DATA_ROOT / "{}.cache".format(dataset)).absolute()
             if not cache_path.exists():
@@ -58,7 +61,12 @@ class EUNlgService:
             self.registry.register("{}-data".format(dataset), DataFrameStore(cache_path))
 
         # Resources
-        self.resources = [CPHIEnglishResource()]
+        self.resources = [
+            CPHIEnglishResource(),
+            ENVEnglishResource(),
+            HealthCostEnglishResource(),
+            HealthFundingEnglishResource(),
+        ]
 
         # Templates
         self.registry.register("templates", self._load_templates())
