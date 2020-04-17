@@ -52,7 +52,9 @@ service = EUNlgService(random_seed=4551546, force_cache_refresh=args.force_cache
 # Swagger
 with open(Path(__file__).parent / ".." / "swagger.yaml", "r") as file_handle:
     swagger_def = yaml.load(file_handle, Loader=yaml.FullLoader)
-app.install(SwaggerPlugin(swagger_def, serve_swagger_ui=True, swagger_ui_suburl="/documentation/"))
+app.install(
+    SwaggerPlugin(swagger_def, serve_swagger_ui=True, swagger_ui_suburl="/documentation/", validate_requests=False)
+)
 
 # Allow for trailing slash in request URLS
 @app.hook("before_request")
@@ -72,6 +74,9 @@ def allow_cors(opts):
         def wrapper(*args, **kwargs):
             response.headers["Access-Control-Allow-Origin"] = "*"
             response.headers["Access-Control-Allow-Methods"] = ", ".join(opts)
+            response.headers["Access-Control-Allow-Headers"] = (
+                "Origin, Accept, Content-Type, X-Requested-With, " "X-CSRF-Token"
+            )
 
             # Only respond with body for non-OPTIONS
             if bottle.request.method != "OPTIONS":
@@ -87,21 +92,30 @@ def allow_cors(opts):
 def news() -> Union[Dict[str, Any], HTTPResponse]:
     json = request.json
 
+    if not json:
+        response.status = 400
+        return {"error": "Missing or empty message body"}
+
     language = json.get("language", "en")
     if language not in service.get_languages():
-        return HTTPResponse({"error": "Invalid value for 'language', query /languages for valid options."}, 400)
+        response.status = 400
+        return {"error": "Invalid value for 'language', query /languages for valid options."}
 
     if "dataset" not in json:
-        return HTTPResponse({"error": "Missing 'dataset' field"}, 400)
+        response.status = 400
+        return {"error": "Missing 'dataset' field"}
     dataset = json.get("dataset")
     if dataset not in service.get_datasets():
-        return HTTPResponse({"error": "Invalid value for 'dataset', query /datasets for valid options."}, 400)
+        response.status = 400
+        return {"error": "Invalid value for 'dataset', query /datasets for valid options."}
 
     if "location" not in json:
-        return HTTPResponse({"error": "Missing 'location' field"}, 400)
+        response.status = 400
+        return {"error": "Missing 'location' field"}
     location = json.get("location")
     if location not in service.get_locations(dataset):
-        return HTTPResponse({"error": "Invalid value for 'location', query /locations for valid options."}, 400)
+        response.status = 400
+        return {"error": "Invalid value for 'location', query /locations for valid options."}
 
     # TODO: Read from params after support for more locations
     location_type = "C"
@@ -128,12 +142,17 @@ def datasets() -> Dict[str, Any]:
 @allow_cors(["POST", "OPTIONS"])
 def locations() -> Union[HTTPResponse, Dict[str, Any]]:
     json = request.json
+    if not json:
+        response.status = 400
+        return {"error": "Missing request body"}
 
     if "dataset" not in json:
-        return HTTPResponse({"error": "Missing 'dataset' field"}, 400)
+        response.status = 400
+        return {"error": "Missing 'dataset' field"}
     dataset = json.get("dataset")
     if dataset not in service.get_datasets():
-        return HTTPResponse({"error": "Invalid value for 'dataset', query /datasets for valid options."}, 400)
+        response.status = 400
+        return {"error": "Invalid value for 'dataset', query /datasets for valid options."}
 
     return {"locations": service.get_locations(dataset)}
 
@@ -141,7 +160,7 @@ def locations() -> Union[HTTPResponse, Dict[str, Any]]:
 @app.route("/health", method=["GET", "OPTIONS"])
 @allow_cors(["GET", "OPTIONS"])
 def health() -> Dict[str, Any]:
-    return {"version": "0.4.3"}
+    return {"version": "0.4.4"}
 
 
 def main() -> None:
