@@ -16,6 +16,7 @@ class SlotRealizer(NLGPipelineComponent):
     def __init__(self) -> None:
         self._random = None
         self._registry = None
+        self.slot_realizers = None
 
     def run(
         self, registry: Registry, random: Generator, language: str, document_plan: DocumentPlanNode
@@ -26,6 +27,11 @@ class SlotRealizer(NLGPipelineComponent):
         log.info("Realizing slots")
         self._registry = registry
         self._random = random
+        # This *MUST* be a copy operation. Otherwise we just keep appending more NumberRealizers to it, leaking
+        # memory all over the place and causing a slowdown. Previously, when this was re-initialized per-slot, the
+        # slowdown ended up being about a factor of 500 over the generation of ~120 texts.
+        self.slot_realizers = self._registry.get("slot-realizers")[:]
+        self.slot_realizers.append(NumberRealizer())
         while self._recurse(document_plan, language.split("-")[0]):
             pass  # Repeat until no more changes
         return (document_plan,)
@@ -53,9 +59,7 @@ class SlotRealizer(NLGPipelineComponent):
             return any_modified
 
     def _realize_slot(self, language: str, slot: Slot) -> List[TemplateComponent]:
-        slot_realizers = self._registry.get("slot-realizers")
-        slot_realizers.append(NumberRealizer())
-        for slot_realizer in slot_realizers:
+        for slot_realizer in self.slot_realizers:
             assert isinstance(slot_realizer, SlotRealizerComponent)
             if language in slot_realizer.supported_languages() or "ANY" in slot_realizer.supported_languages():
                 success, components = slot_realizer.realize(slot, self._random)
