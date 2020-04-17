@@ -49,6 +49,7 @@ ENGLISH: Dict[str, str] = {
     "EA18": "Eurozone (18 countries)",
     "EU": "European Union (at that point in time)",
     "EU28": "European Union (28 countries)",
+    "BA": "Bosnia and Herzegovina",
     "BE": "Belgium",
     "BG": "Bulgaria",
     "CZ": "Czechia",
