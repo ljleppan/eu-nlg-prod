@@ -11,7 +11,7 @@ docker build -t eunlg:latest .
 
 Server runs in port 8080. Run docker as
 ```
-docker run p 8080:8080 -v <data_path>:/app/data eunlg:latest
+docker run -p 8080:8080 -v <data_path>:/app/data eunlg:latest
 ```
 
 where `<data_path>` is a suitable path for datasets to be stored on the local
