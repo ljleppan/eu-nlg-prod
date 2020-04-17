@@ -22,6 +22,10 @@ class GenericEuroStatPreprocessor(ABC):
         # Rank value columns
         df = self._rank_df(df, base_columns)
 
+        # Remove EU and EEA as their own "countries"
+        normal_countries = [code for code in df["location"].unique() if len(code) == 2 and code not in ["EU", "EA"]]
+        df = df[df["location"].isin(normal_countries)]
+
         # Add outlierness to data
         outlierness_columns = [column for column in df.columns if column not in id_columns]
         df = self._add_outlierness_to_data(df, outlierness_columns, [])
