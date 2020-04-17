@@ -98,6 +98,9 @@ class EUMessageGenerator(MessageGenerator):
         agent_type = row["agent_type"]
         timestamp = row["timestamp"]
 
+        if isinstance(timestamp, float):
+            timestamp = str(int(timestamp))
+
         # Retain this + last years' monthly stuff and all yearly stuff. Skip older monthly stuff.
         if timestamp_type == "month":
             log.debug("Skipping data from {} as too old to be interesting".format(timestamp))
