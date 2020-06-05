@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   description: Automatically produces natural language news reports from EuroStat data.
   title: EuroStat news NLG API
-  version: 1.0.0
+  version: 2.0.0
 paths:
   /health:
     options:
@@ -57,12 +57,26 @@ paths:
       responses:
         '200':
           description: OK
-    get:
+    post:
       description: >-
         Returns a JSON array of datasets supported by the /eunlg and /location
         endpoints.
+      consumes:
+        - application/json
       produces:
         - application/json
+      parameters:
+        - in: body
+          name: language
+          description: An object containing any language identifier returned by /languages
+          schema:
+            type: object
+            required:
+              - language
+            properties:
+              language:
+                type: string
+                example: "en"
       responses:
         '200':
           description: OK
@@ -78,6 +92,15 @@ paths:
                 example:
                   - cphi
                   - env
+        '400':
+          description: Error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example:
+                  "Invalid value for 'language', query /languages for valid options."
   /locations:
     options:
       description: "Describes the available HTTP methods for this end point."
@@ -140,8 +163,8 @@ paths:
         - application/json
       parameters:
         - in: body
-          name: dataset
-          description: An object containing any identifier returned by /datasets
+          name: query
+          description: An object defining what dataset to query from, focused on which location, and what language to output.
           schema:
             type: object
             required:

@@ -152,11 +152,18 @@ class EUNlgService:
     def get_locations(self, dataset: str) -> List[str]:
         return list(self.registry.get("{}-data".format(dataset)).all()["location"].unique())
 
-    def get_datasets(self) -> List[str]:
-        return self.datasets
+    def get_datasets(self, language: Optional[str] = None) -> List[str]:
+        return list(
+            {
+                dataset
+                for resource in self.resources
+                for dataset in resource.supported_data
+                if language is None or resource.supports(language, dataset)
+            }
+        )
 
     def get_languages(self):
-        return ["en"]
+        return list({language for resource in self.resources for language in resource.supported_languages})
 
     def run_pipeline(self, language: str, dataset: str, location: str, location_type: str) -> Tuple[str, str]:
         # TODO: Figure out what DATA is supposed to be here?!

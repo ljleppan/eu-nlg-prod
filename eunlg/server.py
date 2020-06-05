@@ -108,6 +108,9 @@ def news() -> Union[Dict[str, Any], HTTPResponse]:
     if dataset not in service.get_datasets():
         response.status = 400
         return {"error": "Invalid value for 'dataset', query /datasets for valid options."}
+    if dataset not in service.get_datasets(language):
+        response.status = 400
+        return {"error": "Dataset not supported for language, query /datasets for supported datasets."}
 
     if "location" not in json:
         response.status = 400
@@ -132,10 +135,23 @@ def languages() -> Dict[str, Any]:
     return {"languages": service.get_languages()}
 
 
-@app.route("/datasets", method=["GET", "OPTIONS"])
-@allow_cors(["GET", "OPTIONS"])
-def datasets() -> Dict[str, Any]:
-    return {"datasets": service.get_datasets()}
+@app.route("/datasets", method=["POST", "OPTIONS"])
+@allow_cors(["POST", "OPTIONS"])
+def datasets() -> Union[HTTPResponse, Dict[str, Any]]:
+    json = request.json
+    if not json:
+        response.status = 400
+        return {"error": "Missing request body"}
+
+    if "language" not in json:
+        response.status = 400
+        return {"error": "Missing 'language' field"}
+    language = json.get("language")
+    if language not in service.get_languages():
+        response.status = 400
+        return {"error": "Invalid value for 'language', query /languages for valid options."}
+
+    return {"datasets": service.get_datasets(language)}
 
 
 @app.route("/locations", method=["POST", "OPTIONS"])
@@ -160,7 +176,7 @@ def locations() -> Union[HTTPResponse, Dict[str, Any]]:
 @app.route("/health", method=["GET", "OPTIONS"])
 @allow_cors(["GET", "OPTIONS"])
 def health() -> Dict[str, Any]:
-    return {"version": "0.4.4"}
+    return {"version": "1.0.0"}
 
 
 def main() -> None:
