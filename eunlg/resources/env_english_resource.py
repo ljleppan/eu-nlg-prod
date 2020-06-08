@@ -117,17 +117,13 @@ class EnglishEnvRawRealizer(RegexRealizer):
 class EnglishEnvUnitMioEurRealizer(RegexRealizer):
     def __init__(self, registry):
         # "the monthly growth rate of the harmonized consumer price index for the category 'health'
-        super().__init__(
-            registry, "en", r"^\[UNIT:env:.*:mio-eur:?.*\]$", "million euros",
-        )
+        super().__init__(registry, "en", r"^\[UNIT:env:.*:mio-eur:?.*\]$", "million euros")
 
 
 class EnglishEnvUnitMioNacRealizer(RegexRealizer):
     def __init__(self, registry):
         # "the monthly growth rate of the harmonized consumer price index for the category 'health'
-        super().__init__(
-            registry, "en", r"^\[UNIT:env:.*:mio-nac:?.*\]$", "million in their national currency",
-        )
+        super().__init__(registry, "en", r"^\[UNIT:env:.*:mio-nac:?.*\]$", "million in their national currency")
 
 
 class EnglishEnvPartialRealizer(LookupRealizer):
