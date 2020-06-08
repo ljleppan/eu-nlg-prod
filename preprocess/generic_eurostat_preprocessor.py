@@ -25,6 +25,7 @@ class GenericEuroStatPreprocessor(ABC):
         # Remove EU and EEA as their own "countries"
         normal_countries = [code for code in df["location"].unique() if len(code) == 2 and code not in ["EU", "EA"]]
         df = df[df["location"].isin(normal_countries)]
+        df.reset_index(drop=True, inplace=True)
 
         # Add outlierness to data
         outlierness_columns = [column for column in df.columns if column not in id_columns]
