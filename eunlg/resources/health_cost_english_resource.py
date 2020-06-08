@@ -143,7 +143,7 @@ MAYBE_RANK_OR_COMP = ":?(rank|rank_reverse|comp_eu|comp_us)?"
 class EnglishHealthCostRawRealizer(RegexRealizer):
     def __init__(self, registry):
         # "the harmonized consumer price index for the category 'health'
-        super().__init__(registry, "en", r"^health:cost:([^:]*):?.*" + MAYBE_RANK_OR_COMP + "$", "the {}")
+        super().__init__(registry, "en", r"^health:cost:([^:]*):?.*" + MAYBE_RANK_OR_COMP + "$", "{}")
 
 
 class EnglishHealthCostUnitSimplifier(RegexRealizer):
