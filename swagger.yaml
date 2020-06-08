@@ -6,7 +6,7 @@ info:
 paths:
   /health:
     options:
-      description: "Returns a JSON array of language codes supported by the /eunlg endpoint."
+      description: "Returns the version number of the system as well. A reply indicates the system is healthy."
       responses:
         '200':
           description: OK
