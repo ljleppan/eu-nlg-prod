@@ -6,41 +6,41 @@ from resources.tabular_data_resource import TabularDataResource
 TEMPLATES: str = """
 # PRESENT VALUE
 
-en: [in {location},] {value_type} was {value} {unit} [in {time}]
+en: [in {location},] the {value_type} was {value} {unit} [in {time}]
 en: [in {location},] it was {value} {unit} [in {time}]
 en-head: in {location}, in {time}, the {value_type} was {value} {unit}
 | value_type = health:cost:.*, value_type != .*:rank.*, value_type != .*:comp_.*
 
 # SINGLE VALUE COMP EU
 
-en: [in {location},] {value_type} was {value} {unit} more than the EU average [in {time}]
+en: [in {location},] the {value_type} was {value} {unit} more than the EU average [in {time}]
 en: [in {location},] it was {value} {unit} more than the EU average [in {time}]
-en-head: in {location}, in {time}, {value_type} at {value} {unit} over EU average
+en-head: in {location}, in {time}, the {value_type} at {value} {unit} over EU average
 | value_type = health:cost:.*:comp_eu, value_type != .*:rank.*, value > 0
 
-en: [in {location},] {value_type} was {value, abs} {unit} less than the EU average [in {time}]
+en: [in {location},] the {value_type} was {value, abs} {unit} less than the EU average [in {time}]
 en: [in {location},] it was {value, abs} {unit} less than the EU average [in {time}]
-en-head: in {location}, in {time}, {value_type} at {value, abs} {unit} below EU average
+en-head: in {location}, in {time}, the {value_type} at {value, abs} {unit} below EU average
 | value_type = health:cost:.*:comp_eu, value_type != .*:rank.*, value < 0
 
-en: [in {location},] {value_type} was the same as the EU average [in {time}]
+en: [in {location},] the {value_type} was the same as the EU average [in {time}]
 en: [in {location},] it was the same as the EU average [in {time}]
 en-head: in {location}, in {time}, {value_type} tied with EU average
 | value_type = health:cost:.*:comp_eu, value_type != .*:rank.*, value = 0.0
 
 # SINGLE VALUE COMP US
 
-en: [in {location},] {value_type} was {value} {unit} more than in US [in {time}]
+en: [in {location},] the {value_type} was {value} {unit} more than in US [in {time}]
 en: [in {location},] it was {value} {unit} more than in US [in {time}]
 en-head: in {location}, in {time}, {value_type} at {value} {unit} over US
 | value_type = health:cost:.*:comp_us, value_type != .*:rank.*, value > 0
 
-en: [in {location},] {value_type} was {value, abs} {unit} less than in US [in {time}]
+en: [in {location},] the {value_type} was {value, abs} {unit} less than in US [in {time}]
 en: [in {location},] it was {value, abs} {unit} less than in US [in {time}]
 en-head: in {location}, in {time}, {value_type} at {value, abs} {unit} below US
 | value_type = health:cost:.*:comp_us, value_type != .*:rank.*, value < 0
 
-en: [in {location},] {value_type} was the same as in US [in {time}]
+en: [in {location},] the {value_type} was the same as in US [in {time}]
 en: [in {location},] it was the same as in US [in {time}]
 en-head: in {location}, in {time}, {value_type} tied with US
 | value_type = health:cost:.*:comp_us, value_type != .*:rank.*, value = 0.0
@@ -49,14 +49,14 @@ en-head: in {location}, in {time}, {value_type} tied with US
 
 en: {location} had the {value, ord} highest {value_type} [in {time}]
 en: {location} had the {value, ord} highest value for it [in {time}]
-en-head: in {time}, {location, case=gen} {value, ord} {value_type} highest
+en-head: in {time}, {location, case=gen} {value, ord} highest {value_type}
 | value_type = health:cost:.*:rank.*
 
 # RANK_REVERSE
 
 en: {location} had the {value, ord} lowest {value_type} [in {time}]
 en: {location} had the {value, ord} lowest value for it [in {time}]
-en-head: in {time}, {location, case=gen} {value, ord} {value_type} lowest
+en-head: in {time}, {location, case=gen} {value, ord} lowest {value_type}
 | value_type = health:cost:.*:rank_reverse.*
 """
 
