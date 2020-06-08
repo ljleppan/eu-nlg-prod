@@ -91,7 +91,7 @@ PARTIALS: Dict[str, str] = {
 
 class ENVEnglishResource(TabularDataResource):
     def __init__(self):
-        super().__init__(["en"], ["cphi"])
+        super().__init__(["en"], ["env"])
         self.templates = TEMPLATES
 
     def slot_realizer_components(self) -> List[Type[SlotRealizerComponent]]:

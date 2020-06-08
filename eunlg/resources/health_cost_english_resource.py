@@ -125,7 +125,7 @@ UNITS: Dict[str, str] = {
 
 class HealthCostEnglishResource(TabularDataResource):
     def __init__(self):
-        super().__init__(["en"], ["health"])
+        super().__init__(["en"], ["health_cost"])
         self.templates = TEMPLATES
 
     def slot_realizer_components(self) -> List[Type[SlotRealizerComponent]]:
