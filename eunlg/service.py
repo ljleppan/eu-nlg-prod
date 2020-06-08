@@ -27,7 +27,9 @@ from eu_number_realizer import EUNumberRealizer
 from finnish_uralicNLP_morphological_realizer import FinnishUralicNLPMorphologicalRealizer
 from resources.conjunctions_resource import CONJUNCTIONS
 from resources.cphi_english_resource import CPHIEnglishResource
+from resources.cphi_finnish_resource import CPHIFinnishResource
 from resources.env_english_resource import ENVEnglishResource
+from resources.env_finnish_resource import ENVFinnishResource
 from resources.error_resource import ERRORS
 from resources.health_cost_english_resource import HealthCostEnglishResource
 from resources.health_funding_english_resource import HealthFundingEnglishResource
@@ -63,7 +65,9 @@ class EUNlgService:
         # Resources
         self.resources = [
             CPHIEnglishResource(),
+            CPHIFinnishResource(),
             ENVEnglishResource(),
+            ENVFinnishResource(),
             HealthCostEnglishResource(),
             HealthFundingEnglishResource(),
         ]

@@ -176,7 +176,7 @@ def locations() -> Union[HTTPResponse, Dict[str, Any]]:
 @app.route("/health", method=["GET", "OPTIONS"])
 @allow_cors(["GET", "OPTIONS"])
 def health() -> Dict[str, Any]:
-    return {"version": "1.0.0"}
+    return {"version": "1.1.0"}
 
 
 def main() -> None:
