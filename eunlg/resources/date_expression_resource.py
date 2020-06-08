@@ -87,5 +87,5 @@ FINNISH: Dict[str, Union[Val, Dict[str, Val]]] = {
     "year": {"reference_options": ["samana vuonna", "myös samana vuonna"]},
     "month-expression": "{month}",
     "month-year-expression": "{month} {year}",
-    "year-expression": "{year}",
+    "year-expression": "vuonna {year}",
 }

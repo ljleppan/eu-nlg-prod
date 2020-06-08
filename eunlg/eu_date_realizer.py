@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from numpy.random import Generator
 
@@ -16,8 +16,9 @@ class EUDateRealizer(NLGPipelineComponent):
     A NLGPipelineComponent that realizers dates.
     """
 
-    def __init__(self, vocab):
+    def __init__(self, vocab, attach_attributes_map: Optional[Dict[str, List[int]]] = None):
         self.vocab = vocab
+        self.attach_attributes = attach_attributes_map
 
     def run(
         self, registry: Registry, random: Generator, language: str, document_plan: DocumentPlanNode
@@ -50,36 +51,65 @@ class EUDateRealizer(NLGPipelineComponent):
         Traverses the DocumentPlan tree recursively in-order and modifies named
         entity to_value functions to return the chosen form of that NE's name.
         """
-        if isinstance(this, Slot):
-            if not isinstance(this.value, str) or this.value[0] != "[" or this.value[-1] != "]":
-                log.debug("Visited non-tag leaf node {}".format(this.value))
-                return previous_entity
+        idx = 0
+        while idx < len(this.children):
+            child = this.children[idx]
+            if isinstance(child, Slot):
+                if not isinstance(child.value, str) or child.value[0] != "[" or child.value[-1] != "]":
+                    log.debug("Visited non-tag leaf node {}".format(child.value))
+                    idx += 1
+                    continue
 
-            segments = this.value[1:-1].split(":")
-            if segments[0] != "TIME":
-                log.debug("Visited non-TIME leaf node {}".format(this.value))
-                return previous_entity
+                segments = child.value[1:-1].split(":")
+                if segments[0] != "TIME":
+                    log.debug("Visited non-TIME leaf node {}".format(child.value))
+                    idx += 1
+                    continue
 
-            if segments[1] == "month":
-                new_value = self._realize_month(this, previous_entity)
-            elif segments[1] == "year":
-                new_value = self._realize_year(this, previous_entity)
-            else:
-                log.error("Visited TIME leaf node {} but couldn't realize it!".format(this.value))
-                return previous_entity
+                timestamp_type = segments[1]
+                if timestamp_type == "month":
+                    new_value = self._realize_month(child, previous_entity)
+                elif timestamp_type == "year":
+                    new_value = self._realize_year(child, previous_entity)
+                else:
+                    log.error("Visited TIME leaf node {} but couldn't realize it!".format(child.value))
+                    idx + 1
+                    continue
 
-            if isinstance(new_value, list):
-                new_value = random.choice(new_value)
+                if isinstance(new_value, list):
+                    new_value = random.choice(new_value)
 
-            original_value = this.value
-            this.value = lambda x: new_value
-            log.debug("Visited TIME leaf node {} and realized it as {}".format(original_value, new_value))
-            return original_value
-        elif isinstance(this, DocumentPlanNode):
-            log.debug("Visiting non-leaf '{}'".format(this))
-            for child in this.children:
+                original_value = child.value
+                new_components = []
+                for component_idx, realization_token in enumerate(new_value.split()):
+                    new_slot = child.copy(include_fact=True)
+
+                    # By default, copy copies the attributes too. In case attach_attributes_to was set,
+                    # we need to explicitly reset the attributes for all those slots NOT explicitly mentioned
+                    if (
+                        self.attach_attributes
+                        and timestamp_type in self.attach_attributes
+                        and component_idx not in self.attach_attributes[timestamp_type]
+                    ):
+                        new_slot.attributes = {}
+
+                    # An ugly hack that ensures the lambda correctly binds to the value of realization_token at this
+                    # time. Without this, all the lambdas bind to the final value of the realization_token variable, ie.
+                    # the final value at the end of the loop.  See https://stackoverflow.com/a/10452819
+                    new_slot.value = lambda f, realization_token=realization_token: realization_token
+                    new_components.append(new_slot)
+
+                this.children[idx : idx + 1] = new_components
+                idx += len(new_components)
+                log.debug("Visited TIME leaf node {} and realized it as {}".format(original_value, new_value))
+                previous_entity = original_value
+            elif isinstance(child, DocumentPlanNode):
+                log.debug("Visiting non-leaf '{}'".format(child))
                 previous_entity = self._recurse(registry, random, language, child, previous_entity)
-            return previous_entity
+                idx += 1
+            else:
+                print("?!")
+                idx += 1
         return previous_entity
 
     def _realize_month(self, this: Slot, previous: Optional[str]) -> Union[str, List[str]]:
@@ -137,4 +167,4 @@ class FinnishEUDateRealizer(EUDateRealizer):
     def __init__(self):
         from resources.date_expression_resource import FINNISH
 
-        super().__init__(FINNISH)
+        super().__init__(FINNISH, {"month": [0], "year": [0]})
