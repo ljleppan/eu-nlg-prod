@@ -58,7 +58,7 @@ class EUNlgService:
             cache_path: Path = (DATA_ROOT / "{}.cache".format(dataset)).absolute()
             if not cache_path.exists():
                 raise IOError("No cached dataset found at {}. Datasets must be generated before startup.")
-            self.registry.register("{}-data".format(dataset), DataFrameStore(cache_path))
+            self.registry.register("{}-data".format(dataset), DataFrameStore(str(cache_path)))
 
         # Resources
         self.resources = [
