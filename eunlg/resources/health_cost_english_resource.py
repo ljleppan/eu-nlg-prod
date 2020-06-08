@@ -8,8 +8,8 @@ TEMPLATES: str = """
 
 en: [in {location},] {value_type} was {value} {unit} [in {time}]
 en: [in {location},] it was {value} {unit} [in {time}]
-en-head: in {location}, in {time}, {value_type} was {value} {unit}
-| value_type = health:cost:.*, value_type != .*:rank.*, value_type != _*.:comp_.*
+en-head: in {location}, in {time}, the {value_type} was {value} {unit}
+| value_type = health:cost:.*, value_type != .*:rank.*, value_type != .*:comp_.*
 
 # SINGLE VALUE COMP EU
 
