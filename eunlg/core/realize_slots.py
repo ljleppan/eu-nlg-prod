@@ -116,6 +116,7 @@ class RegexRealizer(SlotRealizerComponent):
         group_requirements: Optional[Callable[..., bool]] = None,
         slot_requirements: Optional[Callable[[Slot], bool]] = None,
         attach_attributes_to: Optional[Iterable[int]] = None,
+        add_attributes: Optional[Dict[int, Dict[str, str]]] = None,
     ) -> None:
         self.registry = registry
         self.languages = languages if isinstance(languages, list) else [languages]
@@ -124,6 +125,7 @@ class RegexRealizer(SlotRealizerComponent):
         self.group_requirements = group_requirements
         self.slot_requirements = slot_requirements
         self.attach_attributes_to = attach_attributes_to if attach_attributes_to is not None else []
+        self.add_attributes = add_attributes if add_attributes is not None else {}
 
     def supported_languages(self) -> List[str]:
         return self.languages
@@ -160,6 +162,9 @@ class RegexRealizer(SlotRealizerComponent):
             # we need to explicitly reset the attributes for all those slots NOT explicitly mentioned
             if idx not in self.attach_attributes_to:
                 new_slot.attributes = {}
+
+            for attribute, value in self.add_attributes.get(idx, {}).items():
+                new_slot.attributes[attribute] = value
 
             # An ugly hack that ensures the lambda correctly binds to the value of realization_token at this
             # time. Without this, all the lambdas bind to the final value of the realization_token variable, ie.
