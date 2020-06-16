@@ -50,7 +50,7 @@ en-head: in {location}, in {time}, {value_type} tied with US
 en: {location} had the {value, ord} highest {value_type} [in {time}]
 en: {location} had the {value, ord} highest value for it [in {time}]
 en-head: in {time}, {location, case=gen} {value, ord} {value_type} highest
-| value_type = env:.*:rank.*
+| value_type = env:.*:rank, value_type != .*rank_reverse.*
 
 # RANK_REVERSE
 

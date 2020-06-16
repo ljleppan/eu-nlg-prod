@@ -47,16 +47,16 @@ fi-head: {location, case=ssa}, {time, case=ssa}, {value_type} sama kuin EU:n kes
 
 # RANK
 
-fi: [{location, case=gen}] {value_type} oli {value, ord} korkein [{time, case=gen}]
-fi: [{location, case=gen}] se oli {value, ord} korkein [{time, case=gen}]
-fi-head: [{time, case=gen}] [[{location, case=ssa}] {value, ord} korkein {value_type}
-| value_type = cphi:.*:rank.*
+fi: [{location, case=gen}] {value_type} oli {value, ord} korkein [{time, case=ssa}]
+fi: [{location, case=gen}] se oli {value, ord} korkein [{time, case=ssa}]
+fi-head: [{time, case=ssa}] [[{location, case=ssa}] {value, ord} korkein {value_type}
+| value_type = cphi:.*:rank.*, value_type != .*rank_reverse.*
 
 # RANK_REVERSE
 
-fi: [{location, case=gen}] {value_type} oli {value, ord} matalin [{time, case=gen}]
-fi: [{location, case=gen}] se oli {value, ord} matalin [{time, case=gen}]
-fi-head: [{time, case=gen}] [[{location, case=ssa}] {value, ord} matalin {value_type}
+fi: [{location, case=gen}] {value_type} oli {value, ord} matalin [{time, case=ssa}]
+fi: [{location, case=gen}] se oli {value, ord} matalin [{time, case=ssa}]
+fi-head: [{time, case=ssa}] [[{location, case=ssa}] {value, ord} matalin {value_type}
 | value_type = cphi:.*:rank_reverse.*
 """
 

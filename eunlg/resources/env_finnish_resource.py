@@ -50,7 +50,7 @@ fi-head: {location, case=ssa}, {time, case=ssa}, {value_type} sama kuin EU:n kes
 fi: [{location, case=gen}] {value_type} oli {value, ord} korkein [{time, case=gen}]
 fi: [{location, case=gen}] se oli {value, ord} korkein [{time, case=gen}]
 fi-head: [{time, case=gen}] [[{location, case=ssa}] {value, ord} korkein {value_type}
-| value_type = env:.*:rank.*
+| value_type = env:.*:rank, value_type != .*rank_reverse.*
 
 # RANK_REVERSE
 
