@@ -27,6 +27,7 @@ from eu_named_entity_resolver import EUEntityNameResolver
 from eu_number_realizer import EUNumberRealizer
 from finnish_uralicNLP_morphological_realizer import FinnishUralicNLPMorphologicalRealizer
 from resources.conjunctions_resource import CONJUNCTIONS
+from resources.cphi_croatian_resource import CPHICroatianResource
 from resources.cphi_english_resource import CPHIEnglishResource
 from resources.cphi_finnish_resource import CPHIFinnishResource
 from resources.env_english_resource import ENVEnglishResource
@@ -67,6 +68,7 @@ class EUNlgService:
         self.resources = [
             CPHIEnglishResource(),
             CPHIFinnishResource(),
+            CPHICroatianResource(),
             ENVEnglishResource(),
             ENVFinnishResource(),
             HealthCostEnglishResource(),
