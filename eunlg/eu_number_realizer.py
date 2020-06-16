@@ -21,6 +21,7 @@ class EUNumberRealizer(NLGPipelineComponent):
         self.realizers = {
             "fi": {"car": FinnishCardinalRealizer(), "ord": FinnishOrdinalRealizer()},
             "en": {"car": EnglishCardinalRealizer(), "ord": EnglishOrdinalRealizer()},
+            "hr": {"ord": CroatianOrdinalRealizer()},
             "de": {"car": GermanCardinalRealizer()},
         }
 
@@ -184,3 +185,8 @@ class GermanCardinalRealizer(DictionaryRealizer):
                 "12": "zwölf",
             }
         )
+
+
+class CroatianOrdinalRealizer(Realizer):
+    def realize(self, slot: Slot) -> str:
+        return "{}.".format(slot.value)
