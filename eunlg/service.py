@@ -17,6 +17,7 @@ from core.registry import Registry
 from core.surface_realizer import BodyHTMLSurfaceRealizer, HeadlineHTMLSurfaceRealizer
 from core.template_reader import read_templates
 from core.template_selector import TemplateSelector
+from croatian_simple_morpological_realizer import CroatianSimpleMorphologicalRealizer
 from english_uralicNLP_morphological_realizer import EnglishUralicNLPMorphologicalRealizer
 from eu_date_realizer import CroatianEUDateRealizer, EnglishEUDateRealizer, FinnishEUDateRealizer, GermanEUDateRealizer
 from eu_document_planner import EUBodyDocumentPlanner, EUHeadlineDocumentPlanner
@@ -109,7 +110,11 @@ class EUNlgService:
             yield EUEntityNameResolver()
             yield EUNumberRealizer()
             yield MorphologicalRealizer(
-                {"en": EnglishUralicNLPMorphologicalRealizer(), "fi": FinnishUralicNLPMorphologicalRealizer()}
+                {
+                    "en": EnglishUralicNLPMorphologicalRealizer(),
+                    "fi": FinnishUralicNLPMorphologicalRealizer(),
+                    "hr": CroatianSimpleMorphologicalRealizer(),
+                }
             )
             yield HeadlineHTMLSurfaceRealizer() if headline else BodyHTMLSurfaceRealizer()
 
