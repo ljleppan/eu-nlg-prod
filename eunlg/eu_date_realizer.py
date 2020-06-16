@@ -108,7 +108,7 @@ class EUDateRealizer(NLGPipelineComponent):
                 previous_entity = self._recurse(registry, random, language, child, previous_entity)
                 idx += 1
             else:
-                print("?!")
+                # Neither DocumentPlan nor Slot, must be f.ex. Literal -> skip.
                 idx += 1
         return previous_entity
 
