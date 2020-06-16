@@ -12,16 +12,16 @@ def generate(outdir: str, datasets: Optional[List[str]] = None, languages: Optio
     if not out_dir.exists():
         out_dir.mkdir(parents=True)
 
-    for language in service.get_languages():
-        if languages and language not in languages:
-            continue
-        print(language)
-        for dataset in service.get_datasets():
-            if datasets and dataset not in datasets:
-                continue
-            print(" ", dataset)
-            for location in service.get_locations(dataset):
-                print("   ", location)
+    filtered_languages = [lang for lang in service.get_languages() if ((not languages) or (lang in languages))]
+    for language_idx, language in enumerate(filtered_languages):
+        print("{} ({}/{})".format(language, language_idx + 1, len(filtered_languages)))
+
+        filtered_datasets = [ds for ds in service.get_datasets(language) if ((not datasets) or (ds in datasets))]
+        for dataset_index, dataset in enumerate(filtered_datasets):
+            print(" {} ({}/{})".format(dataset, dataset_index + 1, len(filtered_datasets)))
+            locations = service.get_locations(dataset)
+            for location_idx, location in enumerate(locations):
+                print("   {} ({}/{})".format(location, location_idx + 1, len(locations)))
                 if len(location) != 2:
                     print("      Location not 2 letters, skipping")
                 try:
