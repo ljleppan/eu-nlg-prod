@@ -11,7 +11,7 @@ log = logging.getLogger("root")
 
 class EnglishUralicNLPMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):
     def __init__(self):
-        super().__init__("fi")
+        super().__init__("en")
 
         self.case_map: Dict[str, str] = {"genitive": "GEN"}
 
@@ -20,7 +20,7 @@ class EnglishUralicNLPMorphologicalRealizer(LanguageSpecificMorphologicalRealize
         if case is None:
             return slot.value
 
-        log.debug("Realizing {} to Finnish")
+        log.debug("Realizing {} to English".format(slot.value))
 
         case = self.case_map.get(case.lower(), case.upper())
         log.debug("Normalized case {} to {}".format(slot.attributes.get("case"), case))
