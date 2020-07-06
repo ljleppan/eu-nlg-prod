@@ -34,7 +34,9 @@ from resources.env_english_resource import ENVEnglishResource
 from resources.env_finnish_resource import ENVFinnishResource
 from resources.error_resource import ERRORS
 from resources.health_cost_english_resource import HealthCostEnglishResource
+from resources.health_cost_finnish_resource import HealthCostFinnishResource
 from resources.health_funding_english_resource import HealthFundingEnglishResource
+from resources.health_funding_finnish_resource import HealthFundingFinnishResource
 
 log = logging.getLogger("root")
 
@@ -72,7 +74,9 @@ class EUNlgService:
             ENVEnglishResource(),
             ENVFinnishResource(),
             HealthCostEnglishResource(),
+            HealthCostFinnishResource(),
             HealthFundingEnglishResource(),
+            HealthFundingFinnishResource(),
         ]
 
         # Templates
