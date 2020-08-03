@@ -98,7 +98,7 @@ FINNISH: Dict[str, str] = {
     "CZ": "Tsekki",
     "DK": "Tanska",
     "DE": "Saksa",
-    "EE": "Eesti",
+    "EE": "Viro",
     "IE": "Irlanti",
     "EL": "Kreikka",
     "ES": "Espanja",
