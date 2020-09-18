@@ -17,7 +17,7 @@ from service import EUNlgService
 
 # CLI parameters
 parser = argparse.ArgumentParser(description="Run the EU-NLG server.")
-parser.add_argument("port", type=int, default=8080, help="port number to attach to")
+parser.add_argument("port", type=int, nargs="?", default=8080, help="port number to attach to")
 parser.add_argument("--force-cache-refresh", action="store_true", default=False, help="re-compute all local caches")
 args = parser.parse_args()
 sys.argv = sys.argv[0:1]
