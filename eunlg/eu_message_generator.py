@@ -70,6 +70,15 @@ class EUMessageGenerator(MessageGenerator):
                 col_name in ["location", "location_type", "timestamp", "timestamp_type", "agent", "agent_type"]
                 or col_name in ignored_cols
                 or ":outlierness" in col_name
+                or not (
+                    "mio-eur" in col_name
+                    or "eur-hab" in col_name
+                    or "pc-gdp" in col_name
+                    or "pc-che" in col_name
+                    or "hicp2015" in col_name
+                    or "rt1" in col_name
+                    or "rt12" in col_name
+                )
             )
         ]
         df.apply(self._gen_messages, axis=1, args=(col_names, messages))
