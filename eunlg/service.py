@@ -191,7 +191,7 @@ class EUNlgService:
         return templates
 
     def get_locations(self, dataset: str) -> List[str]:
-        return list(self.registry.get("{}-data".format(dataset)).all()["location"].unique())
+        return list(self.registry.get("{}-data".format(dataset)).all()["location"].unique()) + ["all"]
 
     def get_datasets(self, language: Optional[str] = None) -> List[str]:
         return list(
