@@ -165,6 +165,9 @@ class EnglishOrdinalRealizer(Realizer):
             return "th"
 
     def realize(self, slot: Slot) -> str:
+        if str(slot.value) == "1":
+            # Rather than saying "1st highest", it's sufficient to simply say "highest"
+            return ""
         return self.SMALL_ORDINALS.get(slot.value, "{}{}".format(slot.value, self._get_suffix(slot.value)))
 
 
