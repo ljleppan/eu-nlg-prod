@@ -108,7 +108,6 @@ MAYBE_RANK_OR_COMP = ":?(rank|rank_reverse|comp_eu|comp_us)?"
 
 class EnglishEnvRawRealizer(RegexRealizer):
     def __init__(self, registry):
-        # "the harmonized consumer price index for the category 'health'
         super().__init__(
             registry, "en", r"^env:([^:]*):([^:]*):[^:]*" + MAYBE_RANK_OR_COMP + "$", "spending on {} in terms of {}"
         )
@@ -116,13 +115,11 @@ class EnglishEnvRawRealizer(RegexRealizer):
 
 class EnglishEnvUnitMioEurRealizer(RegexRealizer):
     def __init__(self, registry):
-        # "the monthly growth rate of the harmonized consumer price index for the category 'health'
         super().__init__(registry, "en", r"^\[UNIT:env:.*:mio-eur:?.*\]$", "million euros")
 
 
 class EnglishEnvUnitMioNacRealizer(RegexRealizer):
     def __init__(self, registry):
-        # "the monthly growth rate of the harmonized consumer price index for the category 'health'
         super().__init__(registry, "en", r"^\[UNIT:env:.*:mio-nac:?.*\]$", "million in their national currency")
 
 
