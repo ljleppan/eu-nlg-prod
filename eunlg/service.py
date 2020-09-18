@@ -199,7 +199,7 @@ class EUNlgService:
                 dataset
                 for resource in self.resources
                 for dataset in resource.supported_data
-                if language is None or resource.supports(language, dataset)
+                if (language is None or resource.supports(language, dataset)) and dataset in self.datasets
             }
         )
 
