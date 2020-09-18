@@ -103,9 +103,9 @@ def _new_paragraph_relative_threshold(selected_nuclei: List[Message]) -> float:
     if not selected_nuclei:
         return float("-inf")
 
-    # We'd really like to get a second paragraph, so we relax the requirements a bit here
+    # We'd really like to get a second paragraph, so we relax the requirements here
     if len(selected_nuclei) == 1:
-        return 0.1 * selected_nuclei[0].score
+        return 0
 
     # We already have at least 2 paragraphs, so we can be picky about whether we continue or not
     return 0.3 * selected_nuclei[0].score
