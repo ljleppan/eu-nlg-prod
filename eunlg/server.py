@@ -18,6 +18,7 @@ from service import EUNlgService
 # CLI parameters
 parser = argparse.ArgumentParser(description="Run the EU-NLG server.")
 parser.add_argument("port", type=int, nargs="?", default=8080, help="port number to attach to")
+parser.add_argument("--planner", nargs="?", default="full", help="use a specific document planner")
 parser.add_argument("--force-cache-refresh", action="store_true", default=False, help="re-compute all local caches")
 args = parser.parse_args()
 sys.argv = sys.argv[0:1]
@@ -47,7 +48,7 @@ log.addHandler(rotating_file_handler)
 
 # Bottle
 app = Bottle()
-service = EUNlgService(random_seed=4551546, force_cache_refresh=args.force_cache_refresh)
+service = EUNlgService(random_seed=4551546, force_cache_refresh=args.force_cache_refresh, planner=args.planner)
 
 # Swagger
 with open(Path(__file__).parent / ".." / "swagger.yaml", "r") as file_handle:

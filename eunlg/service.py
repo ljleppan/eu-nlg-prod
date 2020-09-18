@@ -19,12 +19,17 @@ from core.template_reader import read_templates
 from core.template_selector import TemplateSelector
 from croatian_simple_morpological_realizer import CroatianSimpleMorphologicalRealizer
 from english_uralicNLP_morphological_realizer import EnglishUralicNLPMorphologicalRealizer
+from eu_context_sim_document_planner import EUContextSimHeadlineDocumentPlanner, EUContextSimBodyDocumentPlanner
 from eu_date_realizer import CroatianEUDateRealizer, EnglishEUDateRealizer, FinnishEUDateRealizer, GermanEUDateRealizer
 from eu_document_planner import EUBodyDocumentPlanner, EUHeadlineDocumentPlanner
+from eu_early_stop_document_planner import EUEarlyStopHeadlineDocumentPlanner, EUEarlyStopBodyDocumentPlanner
 from eu_importance_allocator import EUImportanceSelector
 from eu_message_generator import EUMessageGenerator, NoMessagesForSelectionException
 from eu_named_entity_resolver import EUEntityNameResolver
+from eu_newsworthiness_only_document_planner import EUScoreHeadlineDocumentPlanner, EUScoreBodyDocumentPlanner
 from eu_number_realizer import EUNumberRealizer
+from eu_random_document_planner import EURandomHeadlineDocumentPlanner, EURandomBodyDocumentPlanner
+from eu_topic_sim_document_planner import EUTopicSimHeadlineDocumentPlanner, EUTopicSimBodyDocumentPlanner
 from finnish_uralicNLP_morphological_realizer import FinnishUralicNLPMorphologicalRealizer
 from resources.conjunctions_resource import CONJUNCTIONS
 from resources.cphi_croatian_resource import CPHICroatianResource
@@ -43,7 +48,11 @@ log = logging.getLogger("root")
 
 class EUNlgService:
     def __init__(
-        self, random_seed: Optional[int] = None, force_cache_refresh: bool = False, nomorphi: bool = False
+        self,
+        random_seed: Optional[int] = None,
+        force_cache_refresh: bool = False,
+        nomorphi: bool = False,
+        planner: str = "full",
     ) -> None:
         """
         :param random_seed: seed for random number generation, for repeatability
@@ -96,12 +105,25 @@ class EUNlgService:
         # PRNG seed
         self._set_seed(seed_val=random_seed)
 
-        def _get_components(headline=False):
+        def _get_components(headline=False, planner="full"):
             # Put together the list of components
             # This varies depending on whether it's for headlines and which language we are doing stuff in
             yield EUMessageGenerator()
             yield EUImportanceSelector()
-            yield EUHeadlineDocumentPlanner() if headline else EUBodyDocumentPlanner()
+            if planner == "random":
+                yield EURandomHeadlineDocumentPlanner() if headline else EURandomBodyDocumentPlanner()
+            elif planner == "score":
+                yield EUScoreHeadlineDocumentPlanner() if headline else EUScoreBodyDocumentPlanner()
+            elif planner == "earlystop":
+                yield EUEarlyStopHeadlineDocumentPlanner() if headline else EUEarlyStopBodyDocumentPlanner()
+            elif planner == "topicsim":
+                yield EUTopicSimHeadlineDocumentPlanner() if headline else EUTopicSimBodyDocumentPlanner()
+            elif planner == "contextsim":
+                yield EUContextSimHeadlineDocumentPlanner() if headline else EUContextSimBodyDocumentPlanner()
+            elif planner == "full":
+                yield EUHeadlineDocumentPlanner() if headline else EUBodyDocumentPlanner()
+            else:
+                raise ValueError("INCORRECT PLANNER SETTING")
             yield TemplateSelector()
             yield Aggregator()
             yield SlotRealizer()
@@ -124,9 +146,9 @@ class EUNlgService:
             )
             yield HeadlineHTMLSurfaceRealizer() if headline else BodyHTMLSurfaceRealizer()
 
-        log.info("Configuring Body NLG Pipeline")
-        self.body_pipeline = NLGPipeline(self.registry, *_get_components())
-        self.headline_pipeline = NLGPipeline(self.registry, *_get_components(headline=True))
+        log.info("Configuring Body NLG Pipeline (planner = {})".format(planner))
+        self.body_pipeline = NLGPipeline(self.registry, *_get_components(planner=planner))
+        self.headline_pipeline = NLGPipeline(self.registry, *_get_components(headline=True, planner=planner))
 
     T = TypeVar("T")
 
