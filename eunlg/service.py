@@ -5,7 +5,7 @@ import pickle
 from collections import defaultdict
 from pathlib import Path
 from random import randint
-from typing import Callable, Dict, List, Optional, Tuple, Type, TypeVar
+from typing import Callable, Dict, List, Optional, Tuple, TypeVar
 
 from core.aggregator import Aggregator
 from core.datastore import DataFrameStore
@@ -96,7 +96,7 @@ class EUNlgService:
         self.registry.register("templates", self._load_templates())
 
         # Slot Realizers:
-        realizers: List[Type[SlotRealizerComponent]] = []
+        realizers: List[SlotRealizerComponent] = []
         for resource in self.resources:
             for realizer in resource.slot_realizer_components():
                 realizers.append(realizer(self.registry))
