@@ -85,6 +85,7 @@ def _select_next_nucleus(
         available = available_messages
 
     if not available:
+        log.debug("No available message, bailing out")
         # TODO: This seems to occur at least in some edge cases. Needs to be determined whether it's supposed to or not.
         return None, 0
 
