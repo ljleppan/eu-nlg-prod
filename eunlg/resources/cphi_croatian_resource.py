@@ -18,9 +18,9 @@ hr: [U {location, case=loc}] [{time, case=ssa}] bio je {value} {unit} više od p
 hr-head: U {location, case=loc} {time, case=ssa} {value_type} bio {value} {unit} više od prosjeka EU
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value > 0
 
-hr: [U {location, case=loc}] [{time, case=ssa}] {value_type} bio {value} {unit} ispod prosjeka EU
-hr: [U {location, case=loc}] [{time, case=ssa}] bio je {value} {unit} ispod prosjeka EU
-hr-head: U {location, case=loc} {time, case=ssa} {value_type} bio {value} {unit} ispod prosjeka EU
+hr: [U {location, case=loc}] [{time, case=ssa}] {value_type} bio {value, abs} {unit} ispod prosjeka EU
+hr: [U {location, case=loc}] [{time, case=ssa}] bio je {value, abs} {unit} ispod prosjeka EU
+hr-head: U {location, case=loc} {time, case=ssa} {value_type} bio {value, abs} {unit} ispod prosjeka EU
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value < 0
 
 hr: [U {location, case=loc}] [{time, case=ssa}] {value_type} bio isti kao prosjeka EU
@@ -35,9 +35,9 @@ hr: [U {location, case=loc}] [{time, case=ssa}] bio je {value} {unit} više od p
 hr-head: U {location, case=loc} {time, case=ssa} {value_type} bio {value} {unit} više od prosjeka američki
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value > 0
 
-hr: [U {location, case=loc}] [{time, case=ssa}] {value_type} bio {value} {unit} ispod prosjeka američki
-hr: [U {location, case=loc}] [{time, case=ssa}] bio je {value} {unit} ispod prosjeka američki
-hr-head: U {location, case=loc} {time, case=ssa} {value_type} bio {value} {unit} ispod prosjeka američki
+hr: [U {location, case=loc}] [{time, case=ssa}] {value_type} bio {value, abs} {unit} ispod prosjeka američki
+hr: [U {location, case=loc}] [{time, case=ssa}] bio je {value, abs} {unit} ispod prosjeka američki
+hr-head: U {location, case=loc} {time, case=ssa} {value_type} bio {value, abs} {unit} ispod prosjeka američki
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value < 0
 
 hr: [U {location, case=loc}] [{time, case=ssa}] {value_type} bio isti kao prosjeka američki
