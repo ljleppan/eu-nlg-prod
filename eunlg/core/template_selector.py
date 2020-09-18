@@ -56,7 +56,7 @@ class TemplateSelector(NLGPipelineComponent):
         Recursively works through the tree, adding Templates to Messages.
         """
         # Check all children of this root
-        for child in this.children:
+        for idx, child in enumerate(this.children):
             if isinstance(child, Message):
                 templates = list(template_checker.all_templates_for_message(child))
                 if len(templates) == 0:
@@ -66,7 +66,7 @@ class TemplateSelector(NLGPipelineComponent):
                     log.error("Found no templates to express {}".format(child))
                     raise Exception("No template for message {}".format(child))
                 else:
-                    templates = self._filter_by_context(templates, context, child)
+                    templates = self._filter_by_context(templates, context, child, is_first=(idx == 0))
                     random.shuffle(templates)
                     template = templates[0]
                     self._add_template_to_message(child, template, all_messages)
@@ -87,7 +87,7 @@ class TemplateSelector(NLGPipelineComponent):
         return first_type == second_type
 
     def _filter_by_context(
-        self, templates: List[Template], context: Optional[Message], this: Message
+        self, templates: List[Template], context: Optional[Message], this: Message, is_first: bool
     ) -> List[Template]:
         log.debug("Filtering templates by context. Initial templates:")
         for t in templates:
@@ -124,7 +124,7 @@ class TemplateSelector(NLGPipelineComponent):
             templates = proposed
 
         # Filter s.t. value_type is either mandatory present or absent based on context
-        if context and self._value_type_is_substantially_similar(context, this):
+        if context and self._value_type_is_substantially_similar(context, this) and not is_first:
             proposed = [template for template in templates if not template.has_slot_of_type("value_type")]
         else:
             proposed = [template for template in templates if template.has_slot_of_type("value_type")]
