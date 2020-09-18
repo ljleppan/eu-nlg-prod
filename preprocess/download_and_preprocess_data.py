@@ -6,7 +6,6 @@ import pandas as pd
 import requests
 
 from cphi_preprocessor import CPHIPreprocessor
-from env_preprocessor import EnvPreprocessor
 from health_cost_preprocessor import HealthCostPreprocessor
 from health_funding_preprocessor import HealthFundingPreprocessor
 
@@ -16,7 +15,6 @@ DOWNLOAD_URL = "https://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDow
 
 DATA = {
     "cphi": {"table_id": "ei_cphi_m", "preprocessor": CPHIPreprocessor()},
-    "env": {"table_id": "env_ac_epneec", "preprocessor": EnvPreprocessor()},
     "health_funding": {"table_id": "hlth_sha11_hf", "preprocessor": HealthFundingPreprocessor()},
     "health_cost": {"table_id": "hlth_sha11_hc", "preprocessor": HealthCostPreprocessor()},
 }

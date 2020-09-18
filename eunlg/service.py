@@ -68,7 +68,11 @@ class EUNlgService:
         # DataSets
         DATA_ROOT = Path(__file__).parent.absolute() / ".." / "data"
 
-        self.datasets = ["cphi", "env", "health_cost", "health_funding"]
+        self.datasets = [
+            "cphi",
+            "health_cost",
+            "health_funding",
+        ]
         for dataset in self.datasets:
             cache_path: Path = (DATA_ROOT / "{}.cache".format(dataset)).absolute()
             if not cache_path.exists():
