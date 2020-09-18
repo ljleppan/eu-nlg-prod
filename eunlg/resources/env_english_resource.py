@@ -61,7 +61,7 @@ en-head: in {time}, {location, case=gen} {value, ord} {value_type} lowest
 """
 
 PARTIALS: Dict[str, str] = {
-    "tot_cepa": "total environmental protection activities",
+    "tot-cepa": "total environmental protection activities",
     "cepa1-4-9": "other protection activities",
     "cepa1": "protection of ambient air and climate",
     "cepa112-122": "protection of climate and ozone layer",
