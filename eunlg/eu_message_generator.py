@@ -45,15 +45,20 @@ class EUMessageGenerator(MessageGenerator):
             ignored_cols = []
 
         query: List[str] = []
-        if location_query:
+        if location_query and location_query != "all":
             query.append("location=={!r}".format(location_query))
 
         # if location_type_query:
         #    query.append("location_type=={!r}".format(location_type_query))
 
         query_str = " and ".join(query)
-        log.debug('Query: "{}"'.format(query_str))
-        df = data_store.query(query_str)
+
+        if query_str:
+            log.debug('Query: "{}"'.format(query_str))
+            df = data_store.query(query_str)
+        else:
+            log.debug("Empty query, getting full data")
+            df = data_store.all()
         log.debug("Resulting DataFrame is of size {}".format(df.shape))
 
         messages: List[Message] = []
