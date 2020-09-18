@@ -54,10 +54,14 @@ def _select_next_nucleus(
         log.debug("MAX_PARAGPAPHS reached, stopping")
         return None, 0
 
-    selected_topics = [_topic(nucleus) for nucleus in selected_nuclei]
+    selected_topics = [(_topic(nucleus), nucleus.main_fact.location) for nucleus in selected_nuclei]
     log.debug("Already talked about {}".format(selected_topics))
 
-    available = [message for message in available_messages if _topic(message) not in selected_topics]
+    available = [
+        message
+        for message in available_messages
+        if (_topic(message), message.main_fact.location) not in selected_topics
+    ]
 
     if available:
         # There are still topics we have not discussed, we'll select from among those only by leaving
