@@ -46,9 +46,9 @@ class HealthFundingPreprocessor(GenericEuroStatPreprocessor):
         )
         new_df.reset_index(level=["location", "timestamp"], inplace=True)
         new_df.columns = new_df.columns.to_flat_index()
-        new_df.columns = [("health:funding:" + column[1] + ":" + column[0]).lower() for column in new_df.columns]
+        new_df.columns = [("health_funding:" + column[1] + ":" + column[0]).lower() for column in new_df.columns]
         new_df.rename(
-            columns={"health:funding::location": "location", "health:funding::timestamp": "timestamp"}, inplace=True
+            columns={"health_funding::location": "location", "health_funding::timestamp": "timestamp"}, inplace=True
         )
         new_df = new_df.replace(to_replace=":", value=np.nan)
 
