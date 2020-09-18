@@ -65,4 +65,13 @@ class HealthCostPreprocessor(GenericEuroStatPreprocessor):
         new_df["agent"] = "none"
         new_df["agent_type"] = "passive"
 
+        # Drop boring stuff
+        columns_to_drop = [
+            c
+            for c in new_df
+            if c not in ["location", "location_type", "timestamp", "timestamp_type", "agent", "agent_type"]
+            and not ("mio-eur" in c or "eur-hab" in c or "pc-gdp" in c or "pc-che" in c)
+        ]
+        new_df.drop(columns=columns_to_drop, inplace=True)
+
         return new_df
