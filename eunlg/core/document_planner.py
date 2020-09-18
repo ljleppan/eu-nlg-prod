@@ -71,11 +71,14 @@ class BodyDocumentPlanner(DocumentPlanner):
             nucleus, nucleus_score = self.select_next_nucleus(available_messages, selected_nuclei)
 
             if (
-                nucleus_score < self.new_paragraph_absolute_threshold
+                nucleus is None
+                or nucleus_score < self.new_paragraph_absolute_threshold
                 or nucleus_score < self.new_paragraph_relative_threshold(selected_nuclei)
             ):
                 if selected_nuclei:
                     return (document_plan, scored_messages)
+                else:
+                    raise Exception("Document plan generation finished with no nuclei")
 
             selected_nuclei.append(nucleus)
 
