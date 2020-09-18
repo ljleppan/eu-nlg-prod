@@ -201,7 +201,7 @@ def _weigh_by_context_similarity(
             score *= 1.5
 
         if previous.main_fact.timestamp == message.main_fact.timestamp:
-            score *= 1.1
+            score *= 1.25
 
         weighted.append((score, message))
     return weighted
