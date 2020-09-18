@@ -6,56 +6,56 @@ from resources.tabular_data_resource import TabularDataResource
 TEMPLATES: str = """
 # PRESENT VALUE
 
-en: [in {location},] the {value_type} was {value} {unit} [in {time}]
-en: [in {location},] it was {value} {unit} [in {time}]
-en-head: in {location}, in {time}, {value_type} was {value} {unit}
+en: [in {time},] [in {location},] the {value_type} was {value} {unit}
+en: [in {time},] [in {location},] it was {value} {unit}
+en-head: in {location}, in {time}, the {value_type} was {value} {unit}
 | value_type = cphi:.*, value_type != .*:rank.*, value_type != .*:comp_.*
 
 # SINGLE VALUE COMP EU
 
-en: [in {location},] the {value_type} was {value} {unit} more than the EU average [in {time}]
-en: [in {location},] it was {value} {unit} more than the EU average [in {time}]
-en-head: in {location}, in {time}, {value_type} at {value} {unit} over EU average
+en: [in {time},] [in {location},] the {value_type} was {value} {unit} more than the EU average
+en: [in {time},] [in {location},] it was {value} {unit} more than the EU average
+en-head: in {location}, in {time}, the {value_type} was {value} {unit} over EU average
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value > 0
 
-en: [in {location},] the {value_type} was {value, abs} {unit} less than the EU average [in {time}]
-en: [in {location},] it was {value, abs} {unit} less than the EU average [in {time}]
+en: [in {time},] [in {location},] the {value_type} was {value, abs} {unit} less than the EU average
+en: [in {time},] [in {location},] it was {value, abs} {unit} less than the EU average
 en-head: in {location}, in {time}, {value_type} at {value, abs} {unit} below EU average
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value < 0
 
-en: [in {location},] the {value_type} was the same as the EU average [in {time}]
-en: [in {location},] it was the same as the EU average [in {time}]
+en: [in {time},] [in {location},] the {value_type} was the same as the EU average
+en: [in {time},] [in {location},] it was the same as the EU average
 en-head: in {location}, in {time}, {value_type} tied with EU average
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value = 0.0
 
 # SINGLE VALUE COMP US
 
-en: [in {location},] the {value_type} was {value} {unit} more than in US [in {time}]
-en: [in {location},] it was {value} {unit} more than in US [in {time}]
+en: [in {time},] [in {location},] the {value_type} was {value} {unit} more than in US
+en: [in {time},] [in {location},] it was {value} {unit} more than in US
 en-head: in {location}, in {time}, {value_type} at {value} {unit} over US
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value > 0
 
-en: [in {location},] the {value_type} was {value, abs} {unit} less than in US [in {time}]
-en: [in {location},] it was {value, abs} {unit} less than in US [in {time}]
+en: [in {time},] [in {location},] the {value_type} was {value, abs} {unit} less than in US
+en: [in {time},] [in {location},] it was {value, abs} {unit} less than in US
 en-head: in {location}, in {time}, {value_type} at {value, abs} {unit} below US
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value < 0
 
-en: [in {location},] the {value_type} was the same as in US [in {time}]
-en: [in {location},] it was the same as in US [in {time}]
+en: [in {time},] [in {location},] the {value_type} was the same as in US
+en: [in {time},] [in {location},] it was the same as in US
 en-head: in {location}, in {time}, {value_type} tied with US
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value = 0.0
 
 # RANK
 
-en: {location} had the {value, ord} highest {value_type} [in {time}]
-en: {location} had the {value, ord} highest value for it [in {time}]
+en: [in {time},] {location} had the {value, ord} highest {value_type} across the observed countries
+en: [in {time},] {location} had the {value, ord} highest value for it across the observed countries
 en-head: in {time}, {location, case=gen} {value, ord} {value_type} highest
 | value_type = cphi:.*:rank.*, value_type != .*rank_reverse.*
 
 # RANK_REVERSE
 
-en: {location} had the {value, ord} lowest {value_type} [in {time}]
-en: {location} had the {value, ord} lowest value for it [in {time}]
+en: [in {time},] {location} had the {value, ord} lowest {value_type} across the observed countries
+en: [in {time}, ]{location} had the {value, ord} lowest value for it across the observed countries
 en-head: in {time}, {location, case=gen} {value, ord} {value_type} lowest
 | value_type = cphi:.*:rank_reverse.*
 """
