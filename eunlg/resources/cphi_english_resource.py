@@ -113,9 +113,7 @@ MAYBE_RANK_OR_COMP = ":?(rank|rank_reverse|comp_eu|comp_us)?"
 
 class EnglishCphiRawRealizer(RegexRealizer):
     def __init__(self, registry):
-        super().__init__(
-            registry, "en", r"^cphi:([^:]*):([^:]*)" + MAYBE_RANK_OR_COMP + "$", "the {} for the category {}"
-        )
+        super().__init__(registry, "en", r"^cphi:([^:]*):([^:]*)" + MAYBE_RANK_OR_COMP + "$", "{} for the category {}")
 
 
 class EnglishCphiChangeRealizer(RegexRealizer):
