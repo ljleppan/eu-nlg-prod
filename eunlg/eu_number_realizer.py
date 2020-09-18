@@ -153,12 +153,13 @@ class EnglishOrdinalRealizer(Realizer):
     }
 
     def _get_suffix(self, value: Union[Number, str]) -> str:
-        value = str(value)
-        if value[-1] == "1":
+        if value in [11, 12, 13]:
+            return "th"
+        elif str(value)[-1] == "1":
             return "st"
-        elif value[-1] == "2":
+        elif str(value)[-1] == "2":
             return "nd"
-        elif value[-1] == "3":
+        elif str(value)[-1] == "3":
             return "rd"
         else:
             return "th"
