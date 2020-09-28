@@ -9,55 +9,55 @@ TEMPLATES: str = """
 en: [in {time},] [in {location},] the {value_type} was {value} {unit}
 en: [in {time},] [in {location},] it was {value} {unit}
 en-head: in {location}, in {time}, the {value_type} was {value} {unit}
-| value_type = health_cost:.*, value_type != .*:rank.*, value_type != .*:comp_.*
+| value_type = health:cost:.*, value_type != .*:rank.*, value_type != .*:comp_.*
 
 # SINGLE VALUE COMP EU
 
 en: [in {time},] [in {location},] the {value_type} was {value} {unit} more than the EU average
 en: [in {time},] [in {location},] it was {value} {unit} more than the EU average
 en-head: in {location}, in {time}, the {value_type} at {value} {unit} over EU average
-| value_type = health_cost:.*:comp_eu, value_type != .*:rank.*, value > 0
+| value_type = health:cost:.*:comp_eu, value_type != .*:rank.*, value > 0
 
 en: [in {time},] [in {location},] the {value_type} was {value, abs} {unit} less than the EU average
 en: [in {time},] [in {location},] it was {value, abs} {unit} less than the EU average
 en-head: in {location}, in {time}, the {value_type} at {value, abs} {unit} below EU average
-| value_type = health_cost:.*:comp_eu, value_type != .*:rank.*, value < 0
+| value_type = health:cost:.*:comp_eu, value_type != .*:rank.*, value < 0
 
 en: [in {time},] [in {location},] the {value_type} was the same as the EU average
 en: [in {time},] [in {location},] it was the same as the EU average
 en-head: in {location}, in {time}, {value_type} tied with EU average
-| value_type = health_cost:.*:comp_eu, value_type != .*:rank.*, value = 0.0
+| value_type = health:cost:.*:comp_eu, value_type != .*:rank.*, value = 0.0
 
 # SINGLE VALUE COMP US
 
 en: [in {time},] [in {location},] the {value_type} was {value} {unit} more than in US
 en: [in {time},] [in {location},] it was {value} {unit} more than in US
 en-head: in {location}, in {time}, {value_type} at {value} {unit} over US
-| value_type = health_cost:.*:comp_us, value_type != .*:rank.*, value > 0
+| value_type = health:cost:.*:comp_us, value_type != .*:rank.*, value > 0
 
 en: [in {time},] [in {location},] the {value_type} was {value, abs} {unit} less than in US
 en: [in {time},] [in {location},] it was {value, abs} {unit} less than in US
 en-head: in {location}, in {time}, {value_type} at {value, abs} {unit} below US
-| value_type = health_cost:.*:comp_us, value_type != .*:rank.*, value < 0
+| value_type = health:cost:.*:comp_us, value_type != .*:rank.*, value < 0
 
 en: [in {time},] [in {location},] the {value_type} was the same as in US
 en: [in {time},] [in {location},] it was the same as in US
 en-head: in {location}, in {time}, {value_type} tied with US
-| value_type = health_cost:.*:comp_us, value_type != .*:rank.*, value = 0.0
+| value_type = health:cost:.*:comp_us, value_type != .*:rank.*, value = 0.0
 
 # RANK
 
 en: [in {time},] {location} had the {value, ord} highest {value_type} across the observed countries
 en: [in {time}, ]{location} had the {value, ord} highest value for it across the observed countries
 en-head: in {time}, {location, case=gen} {value, ord} highest {value_type}
-| value_type = health_cost:.*:rank.*, value_type != .*rank_reverse.*
+| value_type = health:cost:.*:rank.*, value_type != .*rank_reverse.*
 
 # RANK_REVERSE
 
 en: [in {time},] {location} had the {value, ord} lowest {value_type} across the observed countries
 en: [in {time}, ]{location} had the {value, ord} lowest value for it across the observed countries
 en-head: in {time}, {location, case=gen} {value, ord} lowest {value_type}
-| value_type = health_cost:.*:rank_reverse.*
+| value_type = health:cost:.*:rank_reverse.*
 """
 
 PARTIALS: Dict[str, str] = {
@@ -112,14 +112,14 @@ PARTIALS: Dict[str, str] = {
 
 
 UNITS: Dict[str, str] = {
-    "[UNIT:health_cost:mio-eur]": "million euro",
-    "[UNIT:health_cost:eur-hab]": "euro per inhabitant",
-    "[UNIT:health_cost:mio-nac]": "million units of national currency",
-    "[UNIT:health_cost:nac-hab]": "national currency per inhabitant",
-    "[UNIT:health_cost:mio-pps]": "million purchasing power standards (PPS)",
-    "[UNIT:health_cost:pps-hab]": "purchasing power standards (PPS) per inhabitant",
-    "[UNIT:health_cost:pc-gdp]": "percent of the gross domestic product",
-    "[UNIT:health_cost:pc-che]": "percent of the total current health expenditure",
+    "[UNIT:health:cost:mio-eur]": "million euro",
+    "[UNIT:health:cost:eur-hab]": "euro per inhabitant",
+    "[UNIT:health:cost:mio-nac]": "million units of national currency",
+    "[UNIT:health:cost:nac-hab]": "national currency per inhabitant",
+    "[UNIT:health:cost:mio-pps]": "million purchasing power standards (PPS)",
+    "[UNIT:health:cost:pps-hab]": "purchasing power standards (PPS) per inhabitant",
+    "[UNIT:health:cost:pc-gdp]": "percent of the gross domestic product",
+    "[UNIT:health:cost:pc-che]": "percent of the total current health expenditure",
 }
 
 
@@ -143,14 +143,14 @@ MAYBE_RANK_OR_COMP = ":?(rank|rank_reverse|comp_eu|comp_us)?"
 class EnglishHealthCostRawRealizer(RegexRealizer):
     def __init__(self, registry):
         # "the harmonized consumer price index for the category 'health'
-        super().__init__(registry, "en", r"^health_cost:([^:]*):?.*" + MAYBE_RANK_OR_COMP + "$", "{}")
+        super().__init__(registry, "en", r"^health:cost:([^:]*):?.*" + MAYBE_RANK_OR_COMP + "$", "{}")
 
 
 class EnglishHealthCostUnitSimplifier(RegexRealizer):
     def __init__(self, registry):
         # "the monthly growth rate of the harmonized consumer price index for the category 'health'
         super().__init__(
-            registry, "en", r"^\[UNIT:health_cost:[^:]*:([^:]*):?.*\]$", "[UNIT:health_cost:{}]",
+            registry, "en", r"^\[UNIT:health:cost:[^:]*:([^:]*):?.*\]$", "[UNIT:health:cost:{}]",
         )
 
 

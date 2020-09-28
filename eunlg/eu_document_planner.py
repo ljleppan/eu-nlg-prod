@@ -43,7 +43,7 @@ class EUHeadlineDocumentPlanner(HeadlineDocumentPlanner):
 
 
 def _topic(message: Message) -> str:
-    return ":".join(message.main_fact.value_type.split(":")[:2])
+    return ":".join(message.main_fact.value_type.split(":")[:3])
 
 
 def _select_next_nucleus(
