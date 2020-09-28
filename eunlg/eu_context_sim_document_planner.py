@@ -29,8 +29,8 @@ class EUContextSimBodyDocumentPlanner(BodyDocumentPlanner):
     def new_paragraph_relative_threshold(self, selected_nuclei: List[Message]) -> float:
         return _new_paragraph_relative_threshold(selected_nuclei)
 
-    def select_satellites_for_nucleus(self, nucleus: Message, available_messages: List[Message]) -> List[Message]:
-        return _select_satellites_for_nucleus(nucleus, available_messages)
+    def select_satellites_for_nucleus(self, nucleus: Message, available_core_messages: List[Message]) -> List[Message]:
+        return _select_satellites_for_nucleus(nucleus, available_core_messages)
 
 
 class EUContextSimHeadlineDocumentPlanner(HeadlineDocumentPlanner):

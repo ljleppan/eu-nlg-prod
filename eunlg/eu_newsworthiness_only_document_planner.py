@@ -29,9 +29,11 @@ class EUScoreBodyDocumentPlanner(BodyDocumentPlanner):
     def new_paragraph_relative_threshold(self, selected_nuclei: List[Message]) -> float:
         return float("-inf")
 
-    def select_satellites_for_nucleus(self, nucleus: Message, available_messages: List[Message]) -> List[Message]:
+    def select_satellites_for_nucleus(
+        self, nucleus: Message, available_core_messages: List[Message], available_expanded_message: List[Message]
+    ) -> List[Message]:
         satellites: List[Message] = []
-        available_messages = available_messages[:]  # Copy, s.t. we can modify in place
+        available_messages = available_core_messages + available_expanded_message
         available_messages.sort(key=lambda x: x.score, reverse=True)
 
         while available_messages and len(satellites) < MAX_SATELLITES_PER_NUCLEUS:

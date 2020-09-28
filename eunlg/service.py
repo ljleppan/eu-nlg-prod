@@ -112,7 +112,7 @@ class EUNlgService:
         def _get_components(headline=False, planner="full"):
             # Put together the list of components
             # This varies depending on whether it's for headlines and which language we are doing stuff in
-            yield EUMessageGenerator()
+            yield EUMessageGenerator(expand=True)
             yield EUImportanceSelector()
             if planner == "random":
                 yield EURandomHeadlineDocumentPlanner() if headline else EURandomBodyDocumentPlanner()

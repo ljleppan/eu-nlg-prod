@@ -29,8 +29,10 @@ class EUBodyDocumentPlanner(BodyDocumentPlanner):
     def new_paragraph_relative_threshold(self, selected_nuclei: List[Message]) -> float:
         return _new_paragraph_relative_threshold(selected_nuclei)
 
-    def select_satellites_for_nucleus(self, nucleus: Message, available_messages: List[Message]) -> List[Message]:
-        return _select_satellites_for_nucleus(nucleus, available_messages)
+    def select_satellites_for_nucleus(
+        self, nucleus: Message, available_core_messages: List[Message], available_expanded_messages: List[Message]
+    ) -> List[Message]:
+        return _select_satellites_for_nucleus(nucleus, available_core_messages, available_expanded_messages)
 
 
 class EUHeadlineDocumentPlanner(HeadlineDocumentPlanner):
@@ -95,6 +97,11 @@ def _select_next_nucleus(
         "Most interesting thing is {} (int={}), selecting it as a nucleus".format(next_nucleus, next_nucleus.score)
     )
 
+    log.debug(
+        f"\nNUCL: {next_nucleus.main_fact.location} {next_nucleus.main_fact.timestamp} "
+        + f"{next_nucleus.main_fact.value_type}"
+    )
+
     return next_nucleus, next_nucleus.score
 
 
@@ -111,40 +118,76 @@ def _new_paragraph_relative_threshold(selected_nuclei: List[Message]) -> float:
     return 0.3 * selected_nuclei[0].score
 
 
-def _select_satellites_for_nucleus(nucleus: Message, available_messages: List[Message]) -> List[Message]:
-    log.debug("Selecting satellites for {} from among {} options".format(nucleus, len(available_messages)))
+def _select_satellites_for_nucleus(
+    nucleus: Message, available_core_messages: List[Message], available_expanded_messages: List[Message]
+) -> List[Message]:
+    log.debug(
+        "Selecting satellites for {} from among {} core messages and {} expanded messages".format(
+            nucleus, len(available_core_messages), len(available_expanded_messages)
+        )
+    )
     satellites: List[Message] = []
-    available_messages = available_messages[:]  # Copy, s.t. we can modify in place
+
+    # Copy, s.t. we can modify in place
+    available_core_messages = available_core_messages[:]
+    available_expanded_messages = available_expanded_messages[:]
 
     previous = nucleus
+    dist_from_prev_core_message = 1
+    core_msgs = 1
+    expanded_msgs = 0
     while True:
 
         # Modify scores to account for context
-        scored_available = [(message.score, message) for message in available_messages if message.score > 0]
-        scored_available = _weigh_by_analysis_similarity(scored_available, previous)
-        scored_available = _weigh_by_context_similarity(scored_available, previous)
-        if previous != nucleus:
-            scored_available = _weigh_by_analysis_similarity(scored_available, nucleus)
-            scored_available = _weigh_by_context_similarity(scored_available, nucleus)
+        scored_available_core_messages = [
+            (message.score, message) for message in available_core_messages if message.score > 0
+        ]
+
+        # if expanded_msgs < core_msgs - 1:
+        scored_available_expanded_messages = [
+            ((message.score / (dist_from_prev_core_message + 1)), message)
+            for message in available_expanded_messages
+            if message.score > 0
+        ]
+        # else:
+        #    scored_available_expanded_messages = []
+        scored_available_messages = scored_available_core_messages + scored_available_expanded_messages
+        scores_v_nucleus = _weigh_by_analysis_similarity(scored_available_messages, nucleus)
+        scores_v_nucleus = _weigh_by_context_similarity(scores_v_nucleus, nucleus)
+        scores_v_nucleus = {message: score for (score, message) in scores_v_nucleus}
+        scores_v_prev = _weigh_by_analysis_similarity(scored_available_messages, previous)
+        scores_v_prev = _weigh_by_context_similarity(scores_v_prev, previous)
+
+        scored_available_messages = []
+        W_NUCLEUS = 1  # Set this to >1 to increase the weight of the nucleus iwhen comparing similarity
+        for score_v_prev, message in scores_v_prev:
+            score_v_nuc = scores_v_nucleus[message]
+            if score_v_prev == 0 and score_v_nuc == 0:
+                weighted_average_score = 0
+            else:
+                weighted_average_score = (W_NUCLEUS * score_v_nuc + score_v_prev) / (W_NUCLEUS + 1)
+            scored_available_messages.append((weighted_average_score, message))
 
         # Filter out based on thresholds
         filtered_scored_available = [
             (score, message)
-            for (score, message) in scored_available
+            for (score, message) in scored_available_messages
             if score > SATELLITE_RELATIVE_THRESHOLD * nucleus.score or score > SATELLITE_ABSOLUTE_THRESHOLD
         ]
-        log.debug("After rescoring for context, {} available satellites remain".format(len(scored_available)))
+        log.debug(
+            "After rescoring for context, {} potential satellites remain".format(len(scored_available_core_messages))
+        )
 
         if not filtered_scored_available:
             if len(satellites) >= MIN_SATELLITES_PER_NUCLEUS:
                 log.debug("Done with satellites: MIN_SATELLITES_PER_NUCLEUS reached, no satellites pass filter.")
                 return satellites
-            elif scored_available:
+            elif scored_available_messages:
                 log.debug(
                     "No satellite candidates pass threshold but have not reached MIN_SATELLITES_PER_NUCLEUS. "
                     "Trying without filter."
                 )
-                filtered_scored_available = scored_available
+                filtered_scored_available = scored_available_messages
             else:
                 log.debug("Did not reach MIN_SATELLITES_PER_NUCLEUS, but ran out of candidates. Ending paragraphs.")
                 return satellites
@@ -154,13 +197,30 @@ def _select_satellites_for_nucleus(nucleus: Message, available_messages: List[Me
             return satellites
 
         filtered_scored_available.sort(key=lambda pair: pair[0], reverse=True)
-
         score, selected_satellite = filtered_scored_available[0]
         satellites.append(selected_satellite)
         log.debug("Added satellite {} (temp_score={})".format(selected_satellite, score))
 
+        if selected_satellite in available_core_messages:
+            available_core_messages = [message for message in available_core_messages if message != selected_satellite]
+            dist_from_prev_core_message = 1
+            core_msgs += 1
+            log.debug(
+                f"CORE: {selected_satellite.main_fact.location} {selected_satellite.main_fact.timestamp} "
+                + f"{selected_satellite.main_fact.value_type}"
+            )
+        else:
+            available_expanded_messages = [
+                message for message in available_expanded_messages if message != selected_satellite
+            ]
+            dist_from_prev_core_message += 1
+            expanded_msgs += 1
+            log.debug(
+                f"EXP:  {selected_satellite.main_fact.location} {selected_satellite.main_fact.timestamp} "
+                + f"{selected_satellite.main_fact.value_type}"
+            )
+
         previous = selected_satellite
-        available_messages = [message for message in available_messages if message != selected_satellite]
 
 
 def _weigh_by_analysis_similarity(
@@ -168,7 +228,17 @@ def _weigh_by_analysis_similarity(
 ) -> List[Tuple[float, Message]]:
 
     weighted: List[Tuple[float, Message]] = []
-    unprocessed: List[Message] = []
+    unprocessed: List[Tuple[float, Message]] = []
+
+    # Within a paragraph, all messages must be about the same general topic,
+    # i.e. have the same prefix of n (here, 3) segments.
+    filtered_messages = []
+    for score, msg in messages:
+        if _topic(msg) == _topic(previous):
+            filtered_messages.append((score, msg))
+        else:
+            weighted.append((0, msg))
+    messages = filtered_messages
 
     # Given that the previous message has value_type of "a:b:c:d", we start trying prefixes longest-first,
     # i.e. starting with "a:b:c:d", then "a:b:c", then "a:b" etc.
@@ -180,7 +250,7 @@ def _weigh_by_analysis_similarity(
 
         for score, message in messages:
             if message.main_fact.value_type.startswith(value_type_prefix):
-                weighted.append((score * 1 / (n + 1), message))
+                weighted.append((score / (n + 1), message))
             else:
                 unprocessed.append((score, message))
 
@@ -197,11 +267,16 @@ def _weigh_by_context_similarity(
     weighted: List[Tuple[float, Message]] = []
 
     for score, message in messages:
-        if previous.main_fact.location == message.main_fact.location:
-            score *= 1.5
-
-        if previous.main_fact.timestamp == message.main_fact.timestamp:
-            score *= 1.25
+        if (
+            previous.main_fact.location != message.main_fact.location
+            and previous.main_fact.timestamp != message.main_fact.timestamp
+        ):
+            score = 0
+        else:
+            if previous.main_fact.location == message.main_fact.location:
+                score *= 2
+            if previous.main_fact.timestamp == message.main_fact.timestamp:
+                score *= 1.5
 
         weighted.append((score, message))
     return weighted

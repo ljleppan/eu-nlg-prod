@@ -20,6 +20,7 @@ class EUMessageGenerator(MessageGenerator):
     """
 
     def __init__(self, expand=True):
+        self.expand = expand
         super(EUMessageGenerator, self).__init__()
 
     def run(
@@ -31,7 +32,7 @@ class EUMessageGenerator(MessageGenerator):
         location_type_query: str,
         dataset: str,
         ignored_cols: Optional[List[str]] = None,
-    ) -> Tuple[List[Message]]:
+    ) -> Tuple[List[Message], List[Message]]:
         log.info(
             "Generating messages with location={}, location_type={}, data={}".format(
                 location_query, location_type_query, dataset,
@@ -44,25 +45,26 @@ class EUMessageGenerator(MessageGenerator):
         if ignored_cols is None:
             ignored_cols = []
 
-        query: List[str] = []
-        if location_query and location_query != "all":
-            query.append("location=={!r}".format(location_query))
-
-        # if location_type_query:
-        #    query.append("location_type=={!r}".format(location_type_query))
-
-        query_str = " and ".join(query)
-
-        if query_str:
-            log.debug('Query: "{}"'.format(query_str))
-            df = data_store.query(query_str)
+        if location_query == "all":
+            core_df = data_store.all()
+            expanded_df = None
+        elif self.expand:
+            log.debug('Query: "{}"'.format("location=={!r}".format(location_query)))
+            core_df = data_store.query("location=={!r}".format(location_query))
+            expanded_df = data_store.query("location!={!r}".format(location_query))
         else:
-            log.debug("Empty query, getting full data")
-            df = data_store.all()
-        log.debug("Resulting DataFrame is of size {}".format(df.shape))
+            log.debug('Query: "{}"'.format("location=={!r}".format(location_query)))
+            core_df = data_store.query("location=={!r}".format(location_query))
+            expanded_df = None
+        log.debug(
+            "Resulting DataFrames are of sizes {} and {}".format(
+                core_df.shape, "empty" if expanded_df is None else expanded_df.shape
+            )
+        )
 
-        messages: List[Message] = []
-        col_names = df
+        core_messages: List[Message] = []
+        expanded_messages: List[Message] = []
+        col_names = core_df
         col_names = [
             col_name
             for col_name in col_names
@@ -72,21 +74,25 @@ class EUMessageGenerator(MessageGenerator):
                 or ":outlierness" in col_name
             )
         ]
-        df.apply(self._gen_messages, axis=1, args=(col_names, messages))
+        core_df.apply(self._gen_messages, axis=1, args=(col_names, core_messages))
+        if expanded_df is not None:
+            expanded_df.apply(self._gen_messages, axis=1, args=(col_names, expanded_messages))
 
         if log.getEffectiveLevel() <= 5:
-            for m in messages:
-                log.debug("Extracted {}".format(m.main_fact))
+            for m in core_messages:
+                log.debug("Extracted CORE message {}".format(m.main_fact))
+            for m in expanded_messages:
+                log.debug("Extracted EXPANDED message {}".format(m.main_fact))
 
-        log.info("Extracted total {} messages".format(len(messages)))
-        if not messages:
-            raise NoMessagesForSelectionException()
+        log.info(
+            "Extracted total {} core messages and {} expanded messages".format(
+                len(core_messages), len(expanded_messages)
+            )
+        )
+        if not core_messages:
+            raise NoMessagesForSelectionException("No core messages")
 
-        # for v in {message.main_fact.value_type for message in messages}:
-        #    print(v)
-        # raise ValueError()
-
-        return (messages,)
+        return core_messages, expanded_messages
 
     def _gen_messages(
         self,

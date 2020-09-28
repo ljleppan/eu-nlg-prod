@@ -14,16 +14,26 @@ log = logging.getLogger("root")
 
 
 class EUImportanceSelector(NLGPipelineComponent):
-    def run(self, registry: Registry, random: RandomState, language: str, messages: List[Message]):
+    def run(
+        self,
+        registry: Registry,
+        random: RandomState,
+        language: str,
+        core_messages: List[Message],
+        expanded_messages: List[Message],
+    ):
         """
         Runs this pipeline component.
         """
-        facts = messages
-        scored_messages = self.score_importance(facts, registry)
-        sorted_scored_messages = sorted(scored_messages, key=lambda x: float(x.score), reverse=True)
-        return (sorted_scored_messages,)
+        core_messages = self.score_importance(core_messages, registry)
+        core_messages = sorted(core_messages, key=lambda x: float(x.score), reverse=True)
 
-    def score_importance(self, messages: List[Message], registry: Registry):
+        expanded_messages = self.score_importance(expanded_messages, registry)
+        expanded_messages = sorted(expanded_messages, key=lambda x: float(x.score), reverse=True)
+
+        return core_messages, expanded_messages
+
+    def score_importance(self, messages: List[Message], registry: Registry) -> List[Message]:
         for msg in messages:
             msg.score = self.score_importance_single(msg, registry)
         return messages
