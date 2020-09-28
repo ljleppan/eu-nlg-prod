@@ -116,16 +116,12 @@ class EUMessageGenerator(MessageGenerator):
         if timestamp_type == "month":
             year, month = timestamp.split("M")
             if int(year) < datetime.now().year - 1:
-                log.debug("Skipping data from {} as too old to be interesting".format(timestamp))
                 return
 
         # For yearly stuff, keep the last three years.
         elif timestamp_type == "year":
             if int(timestamp) < datetime.now().year - 3:
-                log.debug("Skipping data from {} as too old to be interesting".format(timestamp))
                 return
-
-        log.debug("Keeping data from {} as it seems reasonably recent".format(timestamp))
 
         for col_name in col_names:
             value_type = col_name
