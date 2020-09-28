@@ -114,8 +114,8 @@ class EUImportanceSelector(NLGPipelineComponent):
             # more newsworthy than the month 2020M12 by the same amount that
             # 2020M12 is more newsworthy than 2020M11.
             year, month = fact.timestamp.split("M")
-            this_year = min(1, (1 / (datetime.datetime.now().year + 1 - int(year))) ** 2)
-            prev_year = min(1, (1 / (datetime.datetime.now().year + 1 - (int(year) - 1))) ** 2)
+            this_year = min(1.0, (1 / (datetime.datetime.now().year + 1 - int(year))) ** 2)
+            prev_year = min(1.0, (1 / (datetime.datetime.now().year + 1 - (int(year) - 1))) ** 2)
             month_effect = (this_year - prev_year) / (int(month) + 1)
             timestamp_score *= this_year - month_effect
 
