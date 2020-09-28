@@ -42,6 +42,9 @@ class EUImportanceSelector(NLGPipelineComponent):
         fact = message.main_fact
         outlier_score = fact.outlierness or 1
 
+        if math.isnan(outlier_score):
+            outlier_score = 0
+
         # importance of location types - where_type_score
         pass
 
