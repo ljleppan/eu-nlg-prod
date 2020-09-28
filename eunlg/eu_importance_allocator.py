@@ -38,7 +38,7 @@ class EUImportanceSelector(NLGPipelineComponent):
             msg.score = self.score_importance_single(msg, registry)
         return messages
 
-    def score_importance_single(self, message: Message, registry: Registry):
+    def score_importance_single(self, message: Message, registry: Registry) -> float:
         fact = message.main_fact
         outlier_score = fact.outlierness or 1
 
