@@ -90,7 +90,7 @@ class GenericEuroStatPreprocessor(ABC):
         return self._comp_to_loc(df, compare_columns, "US", "{}:comp_us")
 
     def _compare_to_eu(self, df: DataFrame, compare_columns: List[str]) -> DataFrame:
-        return self._comp_to_loc(df, compare_columns, "EU28", "{}:comp_eu")
+        return self._comp_to_loc(df, compare_columns, "EU", "{}:comp_eu")
 
     def _compare_to_similar(self, df: DataFrame, cluster_df: DataFrame, compare_columns: List[str]) -> DataFrame:
 
