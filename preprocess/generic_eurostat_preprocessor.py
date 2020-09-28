@@ -146,6 +146,9 @@ class GenericEuroStatPreprocessor(ABC):
                 return abs(val - q2) / (q3 - q1) * size_weight
 
         def group_outlierness(grp: Series) -> DataFrame:
+            grp = grp.copy()
+            grp -= grp.mean()
+            grp /= grp.std()
             quantiles = grp.quantile([0.25, 0.5, 0.75])
             min_val = grp.min()
             max_val = grp.max()
