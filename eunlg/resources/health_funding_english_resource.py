@@ -65,7 +65,7 @@ PARTIALS: Dict[str, str] = {
     "hf11": "health care funding from government schemes",
     "hf12-13": "health care funding from compulsory contributory health insurance schemes and compulsory medical saving accounts",  # noqa: E501
     "hf121": "health care funding from social health insurance schemes",
-    "hf122": "health care funding from compulsory private insurance scheme",
+    "hf122": "health care funding from compulsory private insurance schemes",
     "hf13": "health care funding from compulsory medical savings accounts (CMSA)",
     "hf2": "health care funding from voluntary health care payment schemes",
     "hf21": "health care funding from voluntary health insurance schemes",
