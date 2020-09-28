@@ -207,6 +207,15 @@ class EUNlgService:
         return list({language for resource in self.resources for language in resource.supported_languages})
 
     def run_pipeline(self, language: str, dataset: str, location: str, location_type: str) -> Tuple[str, str]:
+        log.info("Running headline NLG pipeline")
+        try:
+            headline_lang = "{}-head".format(language)
+            headline = self.headline_pipeline.run((location, location_type, dataset), headline_lang,)
+            log.info("Headline pipeline complete")
+        except Exception as ex:
+            headline = location
+            log.error("%s", ex)
+
         # TODO: Figure out what DATA is supposed to be here?!
         log.info(
             "Running Body NLG pipeline: language={}, dataset={}, location={}, location_type={}".format(
@@ -224,15 +233,6 @@ class EUNlgService:
         except Exception as ex:
             log.error("%s", ex)
             body = ERRORS.get(language, {}).get("general-error", "Something went wrong. Please try again later")
-
-        log.info("Running headline NLG pipeline")
-        try:
-            headline_lang = "{}-head".format(language)
-            headline = self.headline_pipeline.run((location, location_type, dataset), headline_lang,)
-            log.info("Headline pipeline complete")
-        except Exception as ex:
-            headline = location
-            log.error("%s", ex)
 
         return headline, body
 
