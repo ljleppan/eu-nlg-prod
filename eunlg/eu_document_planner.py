@@ -162,10 +162,7 @@ def _select_satellites_for_nucleus(
         W_NUCLEUS = 1  # Set this to >1 to increase the weight of the nucleus when comparing similarity
         for score_v_prev, message in scores_v_prev:
             score_v_nuc = scores_v_nucleus[message]
-            if score_v_prev == 0 and score_v_nuc == 0:
-                weighted_average_score = 0
-            else:
-                weighted_average_score = (W_NUCLEUS * score_v_nuc + score_v_prev) / (W_NUCLEUS + 1)
+            weighted_average_score = (W_NUCLEUS * score_v_nuc + score_v_prev) / (W_NUCLEUS + 1)
             scored_available_messages.append((weighted_average_score, message))
 
         # Filter out based on thresholds
