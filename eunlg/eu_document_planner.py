@@ -159,7 +159,7 @@ def _select_satellites_for_nucleus(
         scores_v_prev = _weigh_by_context_similarity(scores_v_prev, previous)
 
         scored_available_messages = []
-        W_NUCLEUS = 1  # Set this to >1 to increase the weight of the nucleus iwhen comparing similarity
+        W_NUCLEUS = 1  # Set this to >1 to increase the weight of the nucleus when comparing similarity
         for score_v_prev, message in scores_v_prev:
             score_v_nuc = scores_v_nucleus[message]
             if score_v_prev == 0 and score_v_nuc == 0:
