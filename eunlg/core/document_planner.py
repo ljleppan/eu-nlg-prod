@@ -78,7 +78,7 @@ class BodyDocumentPlanner(DocumentPlanner):
         while True:
             nucleus: Message
             nucleus_score: float
-            nucleus, nucleus_score = self.select_next_nucleus(core_messages, selected_nuclei)
+            nucleus, nucleus_score = self.select_next_nucleus(available_core_messages, selected_nuclei)
 
             if (
                 nucleus is None
