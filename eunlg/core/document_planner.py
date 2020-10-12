@@ -76,10 +76,7 @@ class BodyDocumentPlanner(DocumentPlanner):
         selected_nuclei: List[Message] = []
 
         while True:
-            nucleus: Message
-            nucleus_score: float
             nucleus, nucleus_score = self.select_next_nucleus(available_core_messages, selected_nuclei)
-
             if (
                 nucleus is None
                 or nucleus_score < self.new_paragraph_absolute_threshold
