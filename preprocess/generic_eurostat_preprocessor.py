@@ -17,7 +17,7 @@ class GenericEuroStatPreprocessor(ABC):
         df = self._compare_to_eu(df, base_columns)
 
         # Compare columns to USA average
-        df = self._compare_to_us(df, base_columns)
+        # df = self._compare_to_us(df, base_columns)
 
         # Rank value columns
         df = self._rank_df(df, base_columns)
