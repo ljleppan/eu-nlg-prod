@@ -22,7 +22,7 @@ class GenericEuroStatPreprocessor(ABC):
         # Rank value columns
         df = self._rank_df(df, base_columns)
 
-        # Remove EU and EEA as their own "countries"
+        # Remove EU and EEA as their own "countries", requires reindexing to ensure there's not gap in indices
         normal_countries = [code for code in df["location"].unique() if len(code) == 2 and code not in ["EU", "EA"]]
         df = df[df["location"].isin(normal_countries)]
         df.reset_index(drop=True, inplace=True)
