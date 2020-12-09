@@ -15,6 +15,9 @@ class FinnishUralicNLPMorphologicalRealizer(LanguageSpecificMorphologicalRealize
 
         self.case_map: Dict[str, str] = {"ssa": "Ine", "ssä": "Ine", "inessive": "Ine", "genitive": "Gen"}
 
+        if not uralicApi.is_language_installed("fin"):
+            uralicApi.download("fin")
+
     def realize(self, slot: Slot) -> str:
         case: Optional[str] = slot.attributes.get("case")
         if case is None:

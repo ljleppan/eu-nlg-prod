@@ -15,6 +15,9 @@ class EnglishUralicNLPMorphologicalRealizer(LanguageSpecificMorphologicalRealize
 
         self.case_map: Dict[str, str] = {"genitive": "GEN"}
 
+        if not uralicApi.is_language_installed("eng"):
+            uralicApi.download("eng")
+
     def realize(self, slot: Slot) -> str:
         case: Optional[str] = slot.attributes.get("case")
         if case is None:
