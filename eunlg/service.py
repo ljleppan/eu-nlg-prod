@@ -26,6 +26,7 @@ from eu_early_stop_document_planner import EUEarlyStopHeadlineDocumentPlanner, E
 from eu_importance_allocator import EUImportanceSelector
 from eu_message_generator import EUMessageGenerator, NoMessagesForSelectionException
 from eu_named_entity_resolver import EUEntityNameResolver
+from eu_neural_sim_document_planner import EUNeuralSimBodyDocumentPlanner
 from eu_newsworthiness_only_document_planner import EUScoreHeadlineDocumentPlanner, EUScoreBodyDocumentPlanner
 from eu_number_realizer import EUNumberRealizer
 from eu_random_document_planner import EURandomHeadlineDocumentPlanner, EURandomBodyDocumentPlanner
@@ -42,6 +43,8 @@ from resources.health_cost_english_resource import HealthCostEnglishResource
 from resources.health_cost_finnish_resource import HealthCostFinnishResource
 from resources.health_funding_english_resource import HealthFundingEnglishResource
 from resources.health_funding_finnish_resource import HealthFundingFinnishResource
+from template_attacher import TemplateAttacher
+from template_remover import TemplateRemover
 
 log = logging.getLogger("root")
 
@@ -124,6 +127,14 @@ class EUNlgService:
                 yield EUTopicSimHeadlineDocumentPlanner() if headline else EUTopicSimBodyDocumentPlanner()
             elif planner == "contextsim":
                 yield EUContextSimHeadlineDocumentPlanner() if headline else EUContextSimBodyDocumentPlanner()
+            elif planner == "neuralsim":
+                if headline:
+                    yield EUHeadlineDocumentPlanner()
+                else:
+                    yield TemplateAttacher()  # Temporarily attach templates for doc planning
+                    yield EUNeuralSimBodyDocumentPlanner()
+                    yield TemplateRemover()  # Remove temporary templates in preparation for proper template selection
+
             elif planner == "full":
                 yield EUHeadlineDocumentPlanner() if headline else EUBodyDocumentPlanner()
             else:
