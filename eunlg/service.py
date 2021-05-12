@@ -7,7 +7,6 @@ from pathlib import Path
 from random import randint
 from typing import Callable, Dict, List, Optional, Tuple, TypeVar
 
-from core.aggregator import Aggregator
 from core.datastore import DataFrameStore
 from core.models import Template
 from core.morphological_realizer import MorphologicalRealizer
@@ -112,7 +111,7 @@ class EUNlgService:
         # PRNG seed
         self._set_seed(seed_val=random_seed)
 
-        def _get_components(headline=False, planner="full"):
+        def _get_components(headline=False, planner="neuralsim"):
             # Put together the list of components
             # This varies depending on whether it's for headlines and which language we are doing stuff in
             yield EUMessageGenerator(expand=True)
@@ -140,7 +139,7 @@ class EUNlgService:
             else:
                 raise ValueError("INCORRECT PLANNER SETTING")
             yield TemplateSelector()
-            yield Aggregator()
+            # yield Aggregator()
             yield SlotRealizer()
             yield LanguageSplitComponent(
                 {

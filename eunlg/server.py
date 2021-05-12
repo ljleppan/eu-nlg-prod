@@ -24,13 +24,13 @@ args = parser.parse_args()
 sys.argv = sys.argv[0:1]
 
 log = logging.getLogger("root")
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
 
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
-stream_handler.setLevel(logging.DEBUG)
+stream_handler.setLevel(logging.INFO)
 
 rotating_file_handler = logging.handlers.RotatingFileHandler(
     Path(__file__).parent / ".." / "reporter.log",

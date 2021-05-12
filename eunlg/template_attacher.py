@@ -5,11 +5,13 @@ from typing import List
 from numpy.random.mtrand import RandomState
 
 from core.models import Message, DocumentPlanNode
-from core.pipeline import NLGPipelineComponent
+from core.pipeline import NLGPipelineComponent, LanguageSplitComponent
 from core.realize_slots import SlotRealizer
 from core.registry import Registry
 from core.template_selector import TemplateSelector
+from eu_date_realizer import EnglishEUDateRealizer, FinnishEUDateRealizer, CroatianEUDateRealizer, GermanEUDateRealizer
 from eu_named_entity_resolver import EUEntityNameResolver
+from eu_number_realizer import EUNumberRealizer
 
 log = logging.getLogger("root")
 
@@ -28,11 +30,35 @@ class TemplateAttacher(NLGPipelineComponent):
         """
         template_selector = TemplateSelector()
         slot_realizer = SlotRealizer()
+        date_realizer = LanguageSplitComponent(
+            {
+                "en": EnglishEUDateRealizer(),
+                "fi": FinnishEUDateRealizer(),
+                "hr": CroatianEUDateRealizer(),
+                "de": GermanEUDateRealizer(),
+            }
+        )
+        number_realizer = EUNumberRealizer()
         entity_name_resolver = EUEntityNameResolver()
+
+        original_log_level = log.level
+        log.info(f"Setting log level to WARNING (={logging.WARNING}) temporarily (was {original_log_level})")
+        log.setLevel(logging.WARNING)
+        # i = 0
+        # start = time.time()
         for msg in itertools.chain(core_messages, expanded_messages):
             doc_plan = DocumentPlanNode([msg])
             template_selector.run(registry, random, language, doc_plan, core_messages)
             slot_realizer.run(registry, random, language, doc_plan)
+            date_realizer.run(registry, random, language, doc_plan)
             entity_name_resolver.run(registry, random, language, doc_plan)
+            number_realizer.run(registry, random, language, doc_plan)
+            # i += 1
+            # if i >= 1000:
+            #    end = time.time()
+            #    print(f"{i} enties took {end-start:.20f} time")
+            #    raise ValueError()
 
+        log.setLevel(original_log_level)
+        log.info(f"Log level restored to {original_log_level}")
         return core_messages, expanded_messages

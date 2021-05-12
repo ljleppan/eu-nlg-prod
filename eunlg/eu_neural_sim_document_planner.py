@@ -238,9 +238,15 @@ def _sim_score(candidates: List[Tuple[float, Message]], context: Message) -> Lis
     ]
 
 
-def to_sentence_embedding(message: Message) -> torch.tensor:
+def to_sentence_embedding(message: Message) -> torch.Tensor:
+    # if isinstance(message.template, torch.Tensor):
+    #    return message.template
     tokenizer, model = MODELS
-    tokenised_message = torch.tensor([tokenizer.encode(message.template, add_special_tokens=True)])
+    msg_text: List[str] = []
+    for c in message.template.components:
+        msg_text.extend(str(c.value).split(" "))
+    tokenised_message = torch.tensor([tokenizer.encode(msg_text, add_special_tokens=True)])
     word_embeddings = model(tokenised_message)[0]
     sentence_embedding = word_embeddings.mean(dim=1)
+    # message.template = sentence_embedding
     return sentence_embedding
