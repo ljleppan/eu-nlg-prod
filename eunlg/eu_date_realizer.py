@@ -168,3 +168,9 @@ class FinnishEUDateRealizer(EUDateRealizer):
         from resources.date_expression_resource import FINNISH
 
         super().__init__(FINNISH, {"month": [0], "year": [0]})
+
+class RussianEUDateRealizer(EUDateRealizer):
+    def __init__(self):
+        from resources.date_expression_resource import RUSSIAN
+
+        super().__init__(RUSSIAN)

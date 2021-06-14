@@ -20,4 +20,10 @@ CONJUNCTIONS: Dict[str, Dict[str, str]] = {
         "comparator": "als",
     },
     "hr": {"default_combiner": "i", "inverse_combiner": "ali"},
+    "ru": {
+        "default_combiner": "и",
+        "inverse_combiner": "но",
+        "subord_clause_start": ", который",
+        "comparator": "чем",
+    },
 }
