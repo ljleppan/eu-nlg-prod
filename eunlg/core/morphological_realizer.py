@@ -1,10 +1,10 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 from numpy.random import Generator
 
-from .models import DocumentPlanNode, Message, Slot
+from .models import DocumentPlanNode, Message, Slot, TemplateComponent
 from .pipeline import NLGPipelineComponent
 from .registry import Registry
 
@@ -16,7 +16,7 @@ class LanguageSpecificMorphologicalRealizer(ABC):
         self.language = language
 
     @abstractmethod
-    def realize(self, slot: Slot) -> str:
+    def realize(self, slot: Slot, left_context: List[TemplateComponent], right_context: List[TemplateComponent]) -> str:
         pass
 
 
@@ -54,7 +54,11 @@ class MorphologicalRealizer(NLGPipelineComponent):
                 self._recurse(language, child)
             return
 
-        for template_component in this.template.components:
+        for idx, template_component in enumerate(this.template.components):
             if isinstance(template_component, Slot):
-                realized_value = self.language_realizers[language].realize(template_component)
+                left_context = this.template.components[:idx]
+                right_context = this.template.components[idx + 1 :]
+                realized_value = self.language_realizers[language].realize(
+                    template_component, left_context, right_context
+                )
                 template_component.value = lambda x, realized_value=realized_value: realized_value
