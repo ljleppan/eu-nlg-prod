@@ -6,36 +6,36 @@ from resources.tabular_data_resource import TabularDataResource
 TEMPLATES: str = """
 # PRESENT VALUE
 
-ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был(-а) {value} {unit}
-ru-head: в {location, case=loc2}, в {time, case=loc2}, {value_type} был(-а) {value} {unit}
+ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был {value} {unit}
+ru-head: в {location, case=loc2}, в {time, case=loc2}, {value_type} был {value} {unit}
 | value_type = cphi:.*, value_type != .*:rank.*, value_type != .*:comp_.*
 
 # SINGLE VALUE COMP EU
 
-ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был(-а) {value} {unit} больше, чем в среднем по ЕС
-ru-head: в {location, case=loc2}, в {time, case=loc2}, {value_type} был(-а) {value} {unit} выше среднего по ЕС 
+ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был на {value} {unit} больше, чем в среднем по ЕС
+ru-head: в {location, case=loc2}, в {time, case=loc2}, {value_type} был {value} {unit} выше среднего по ЕС
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value > 0
 
-ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был(-а) {value, abs} {unit} меньше, чем в среднем по ЕС
+ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был на {value, abs} {unit} меньше, чем в среднем по ЕС
 ru-head: в {location, case=loc2}, в {time, case=loc2}, {value_type} на {value, abs} {unit} ниже среднего по ЕС 
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value < 0
 
-ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был(-а) таким же, как в среднем по ЕС
-ru-head: в {location, case=loc2}, в {time, case=loc2}, {value_type} был(-а) таким же, как в среднем по ЕС
+ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был таким же, как в среднем по ЕС
+ru-head: в {location, case=loc2}, в {time, case=loc2}, {value_type} был таким же, как в среднем по ЕС
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value = 0.0
 
 # SINGLE VALUE COMP US
 
-ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был(-а) {value} {unit} больше чем в США
+ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был на {value} {unit} больше чем в США
 ru-head: в {location, case=loc2}, в {time, case=loc2}, {value_type} на {value} {unit} больше США
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value > 0
 
-ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был(-а) {value, abs} {unit} меньше чем в США
+ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был на {value, abs} {unit} меньше чем в США
 ru-head: in {location, case=loc2}, in {time, case=loc2}, {value_type} на {value, abs} {unit} меньше США
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value < 0
 
-ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был(-а) таким же, как в США 
-ru-head: в {location, case=loc2}, в {time, case=loc2}, {value_type} был(-а) таким же, как в США
+ru: [в {time, case=loc2},] [в {location, case=loc2},] {value_type} был таким же, как в США 
+ru-head: в {location, case=loc2}, в {time, case=loc2}, {value_type} был таким же, как в США
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value = 0.0
 
 # RANK
@@ -125,7 +125,7 @@ class RussianUnitCphiPercentageRealizer(RegexRealizer):
             registry,
             "ru",
             r"^\[UNIT:cphi:.*\]$",
-            "процентные пункты",
+            "процентных пунктов",
             slot_requirements=lambda slot: "rt1" in slot.value.split(":") or "rt12" in slot.value.split(":"),
         )
 
@@ -136,7 +136,7 @@ class RussianUnitCphiPointsRealizer(RegexRealizer):
             registry,
             "ru",
             r"^\[UNIT:cphi:.*\]$",
-            "пункты",
+            "пункта",
             slot_requirements=lambda slot: "rt1" not in slot.value.split(":") and "rt12" not in slot.value.split(":"),
         )
 
