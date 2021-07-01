@@ -4,12 +4,45 @@ from typing import List
 from core.models import Slot, TemplateComponent
 from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
 
+import pymorphy2
+
 log = logging.getLogger("root")
 
 
 class RussianMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):
     def __init__(self):
         super().__init__("ru")
+        self.morph = pymorphy2.MorphAnalyzer()
 
     def realize(self, slot: Slot, left_context: List[TemplateComponent], right_context: List[TemplateComponent]) -> str:
-        return slot.value
+        case: Optional[str] = slot.attributes.get("case")
+        if case is None:
+            return slot.value
+
+        log.debug("Realizing {} to Russian".format(slot.value))
+
+        possible_analyses = [
+            analysis
+            for analysis in self.morph.parse(slot.value)
+            if "nomn" in analysis.tag
+        ]
+
+        log.debug("Identified {} possible analyses".format(len(possible_analyses)))
+        for analysis in possible_analyses:
+            log.debug("\t{}".format(analysis))
+        if len(possible_analyses) == 0:
+            log.warning(
+                "No valid morphological analysis for {}, unable to realize despite case attribute".format(slot.value)
+            )
+            return slot.value
+
+        analysis = possible_analyses[0]
+        log.debug("Picked {} as the morphological analysis of {}".format(analysis, slot.value))
+
+        modified_value = analysis.inflect({case}).word
+
+        if "Geox" in analysis.tag:
+            modified_value = modified_value.capitalize()
+        log.debug("Realized value is {}".format(modified_value))
+
+        return modified_value
