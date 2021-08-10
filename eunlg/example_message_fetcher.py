@@ -20,11 +20,11 @@ class ExampleMessageFetcher(MessageGenerator):
 
     def run(self, dataset: str, template: Optional[Template], shuffle: bool = False) -> List[Message]:
         """
-        Fetch a representative sample of example messages from `dataset`that match `template`.
+        Fetch a representative sample of example messages from `dataset` that match `template`.
 
         If `template` is not given, return a representative sample of all the messages in `dataset`.
 
-        If `suffle` is set to True, the messages are suffled before selection, resulting in a somewhat more random
+        If `suffle` is set to True, the messages are shuffled before selection, resulting in a somewhat more random
         sample. If left False, as per the default, the ordering of the data in the underlying DF effectively decides
         what messages are returned.
 
@@ -33,7 +33,7 @@ class ExampleMessageFetcher(MessageGenerator):
         COMBINATIONS of values are guaranteed to be present, as that is by definition just the set of all messages.
         """
 
-        # Find the correct dataframe. Passing a registry as an argument could maybe be slightly more foolproof, but
+        # Find the correct data frame. Passing a registry as an argument could maybe be slightly more foolproof, but
         # generating a complete registry is 1) a hassle and 2) a lot of extra work. Instead we just borrow the same
         # DATA_ROOT used in producing the prime Registry in NLGService.
         cache_path: Path = (DATA_ROOT / "{}.cache".format(dataset)).absolute()
@@ -144,8 +144,6 @@ class ExampleMessageFetcher(MessageGenerator):
             outlierness_col_name = col_name + ":outlierness"
             outlierness = row.get(outlierness_col_name, None)
 
-            # There are potentially multiple outlierness values to choose from, corresponding to multiple ways of
-            # grouping the data. TODO: Smarter way to select which on the use
             if not outlierness:
                 outlierness = row.get(col_name + ":grouped_by_time:outlierness", None)
 
