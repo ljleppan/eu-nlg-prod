@@ -258,11 +258,7 @@ def msg_as_realized_dict(message: Message, template: Template, language: str) ->
     # Re-enable logging
     log.setLevel(old_log_level)
 
-    doc_plan.print_tree()
-    print("--")
-
     msg: Message = doc_plan.children[0]
-    print(msg)
 
     dct = dict()
     for component in msg.template.components:
