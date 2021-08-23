@@ -2,18 +2,49 @@ import logging
 import random
 from functools import lru_cache
 from math import isnan
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict
 
+import numpy as np
 from pandas import Series, DataFrame
 
-from core.models import Template, Message, Fact
+from core.models import Template, Message, Fact, Slot, DocumentPlanNode
+from core.morphological_realizer import MorphologicalRealizer
+from core.pipeline import LanguageSplitComponent
+from core.realize_slots import SlotRealizer
 from core.template_reader import read_templates
+from core.template_selector import TemplateSelector
+from croatian_simple_morpological_realizer import CroatianSimpleMorphologicalRealizer
+from english_uralicNLP_morphological_realizer import EnglishUralicNLPMorphologicalRealizer
+from eu_date_realizer import EnglishEUDateRealizer, FinnishEUDateRealizer, CroatianEUDateRealizer, GermanEUDateRealizer
+from eu_named_entity_resolver import EUEntityNameResolver
+from eu_number_realizer import EUNumberRealizer
+from finnish_uralicNLP_morphological_realizer import FinnishUralicNLPMorphologicalRealizer
 from service import EUNlgService
+from service import translator as TRANSLATOR
 
 log = logging.getLogger("root")
 
 
 SERVICE = EUNlgService()
+TEMPLATE_SELECTOR = TemplateSelector()
+SLOT_REALIZER = SlotRealizer()
+DATE_REALIZER = LanguageSplitComponent(
+    {
+        "en": EnglishEUDateRealizer(),
+        "fi": FinnishEUDateRealizer(),
+        "hr": CroatianEUDateRealizer(),
+        "de": GermanEUDateRealizer(),
+    }
+)
+ENTITY_NAME_RESOLVER = EUEntityNameResolver(TRANSLATOR)
+NUMBER_REALIZER = EUNumberRealizer()
+MORPHOLOGICAL_REALIZER = MorphologicalRealizer(
+    {
+        "en": EnglishUralicNLPMorphologicalRealizer(),
+        "fi": FinnishUralicNLPMorphologicalRealizer(),
+        "hr": CroatianSimpleMorphologicalRealizer(),
+    }
+)
 
 
 def obtain_example_messages_for_all_templates(
@@ -195,9 +226,63 @@ def _gen_messages(
         messages.append(message)
 
 
+def template_as_string_approximation(template: Template) -> str:
+    strn = ""
+    for element in template.components:
+        if isinstance(element, Slot):
+            strn += "{" + element.slot_type + "}"
+        else:
+            strn += element.value
+        strn += " "
+    return strn
+
+
+def msg_as_realized_dict(message: Message, template: Template, language: str) -> Dict[str, str]:
+    rnd = np.random.default_rng(42)
+
+    # Disable logging for a while
+    old_log_level = log.level
+    log.setLevel(logging.WARNING)
+
+    # Accessing a non-public method, but I can't be bothered to re-engineer the whole class.
+    TEMPLATE_SELECTOR._add_template_to_message(message, template, [message])
+
+    # Realize the single message + template pair
+    doc_plan = DocumentPlanNode([message])
+    (doc_plan,) = SLOT_REALIZER.run(SERVICE.registry, rnd, language, doc_plan)
+    (doc_plan,) = DATE_REALIZER.run(SERVICE.registry, rnd, language, doc_plan)
+    (doc_plan,) = ENTITY_NAME_RESOLVER.run(SERVICE.registry, rnd, language, doc_plan)
+    (doc_plan,) = NUMBER_REALIZER.run(SERVICE.registry, rnd, language, doc_plan)
+    (doc_plan,) = MORPHOLOGICAL_REALIZER.run(SERVICE.registry, rnd, language, doc_plan)
+
+    # Re-enable logging
+    log.setLevel(old_log_level)
+
+    doc_plan.print_tree()
+    print("--")
+
+    msg: Message = doc_plan.children[0]
+    print(msg)
+
+    dct = dict()
+    for component in msg.template.components:
+        if isinstance(component, Slot):
+            slot_type = component.slot_type
+            if slot_type not in dct:
+                dct[slot_type] = []
+            dct[slot_type].append(str(component.value))
+
+    for key, val in dct.items():
+        dct[key] = " ".join(val)
+
+    return dct
+
+
 if __name__ == "__main__":
-    # log.info = print
-    # log.debug = print
+    print("asd")
+    log.setLevel(logging.DEBUG)
+    log.debug("test")
+    print("asd")
 
     for (tmpl, example_msgs) in obtain_example_messages_for_all_templates("cphi", "en", shuffle=True):
         print(f"{len(example_msgs)} example messages found for template {tmpl}")
