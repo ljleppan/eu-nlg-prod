@@ -339,10 +339,6 @@ def read_template_group(
                         else:
                             # Key-only attributes such as "abs" or "ord" are also possible
                             attributes[subst_part] = True
-                            log.info(
-                                "Found an attribute with no value specified. "
-                                "Possibly a leftover old style filter? {}".format(subst_part)
-                            )
 
                     if field_name[0] in ["'", '"']:
                         to_value = LiteralSource(field_name[1:-1])
