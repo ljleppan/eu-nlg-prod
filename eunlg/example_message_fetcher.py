@@ -263,7 +263,7 @@ def realize_message(message: Message, template: Template, language: str) -> Mess
     return msg
 
 
-def msg_as_realizer_str(message: Message, template: Template, language: str) -> str:
+def msg_as_realized_str(message: Message, template: Template, language: str) -> str:
     msg = realize_message(message, template, language)
     component_values = [str(component.value) for component in msg.template.components]
     sent = " ".join([component_value for component_value in component_values if component_value != ""]).rstrip()
