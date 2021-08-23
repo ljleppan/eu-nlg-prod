@@ -407,7 +407,11 @@ class Slot(TemplateComponent):
 
     # Todo: Are the values in "attributes" of a known type?
     def __init__(
-        self, to_value: "SlotSource", attributes: Optional[Dict[str, Any]] = None, fact: Optional[Fact] = None
+        self,
+        to_value: "SlotSource",
+        attributes: Optional[Dict[str, Any]] = None,
+        fact: Optional[Fact] = None,
+        slot_type: Optional[str] = None,
     ) -> None:
         """
         :param to_value: A callable that defines how to transform the message
@@ -418,10 +422,7 @@ class Slot(TemplateComponent):
         self.attributes = attributes or {}
         self._to_value = to_value
         self.fact = fact
-
-    @property
-    def slot_type(self) -> str:
-        return self._to_value.field_name
+        self.slot_type = to_value.field_name if slot_type is None else slot_type
 
     @property
     def value(self) -> Union[str, int, float]:
@@ -434,9 +435,9 @@ class Slot(TemplateComponent):
     def copy(self, include_fact=False) -> "Slot":
         # TODO: Is it intended that Fact is not copied over?
         if not include_fact:
-            return Slot(self._to_value, self.attributes.copy())
+            return Slot(self._to_value, self.attributes.copy(), self.slot_type)
         else:
-            return Slot(self._to_value, self.attributes.copy(), self.fact)
+            return Slot(self._to_value, self.attributes.copy(), self.fact, self.slot_type)
 
     def __str__(self) -> str:
         try:
