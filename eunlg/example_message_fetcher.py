@@ -237,7 +237,7 @@ def template_as_string_approximation(template: Template) -> str:
     return strn
 
 
-def msg_as_realized_dict(message: Message, template: Template, language: str) -> Dict[str, str]:
+def realize_message(message: Message, template: Template, language: str) -> Message:
     rnd = np.random.default_rng(42)
 
     # Disable logging for a while
@@ -259,6 +259,11 @@ def msg_as_realized_dict(message: Message, template: Template, language: str) ->
     log.setLevel(old_log_level)
 
     msg: Message = doc_plan.children[0]
+    return msg
+
+
+def msg_as_realized_dict(message: Message, template: Template, language: str) -> Dict[str, str]:
+    msg = realize_message(message, template, language)
 
     dct = dict()
     for component in msg.template.components:
