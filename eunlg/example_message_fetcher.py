@@ -1,5 +1,6 @@
 import logging
 import random
+import re
 from functools import lru_cache
 from math import isnan
 from typing import List, Optional, Tuple, Dict
@@ -260,6 +261,17 @@ def realize_message(message: Message, template: Template, language: str) -> Mess
 
     msg: Message = doc_plan.children[0]
     return msg
+
+
+def msg_as_realizer_str(message: Message, template: Template, language: str) -> str:
+    msg = realize_message(message, template, language)
+    component_values = [str(component.value) for component in msg.template.components]
+    sent = " ".join([component_value for component_value in component_values if component_value != ""]).rstrip()
+    sent = re.sub(r"\(\s", r"(", sent)
+    sent = re.sub(r"\s\)", r")", sent)
+    sent = re.sub(r"\s,", r",", sent)
+    sent = sent[0].upper() + sent[1:]
+    return sent
 
 
 def msg_as_realized_dict(message: Message, template: Template, language: str) -> Dict[str, str]:
