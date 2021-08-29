@@ -40,15 +40,15 @@ ru-head: в {location, case=loct} в {time, case=loct} {value_type} был та�
 
 # RANK
 
-ru: [в {time, case=loct}] {location} имел(-а) {value, ord} самый высокий {value_type} во всех наблюдаемых странах
-ru: [в {time, case=loct}] {location} имел(-а) {value, ord} самый высокое значение во всех наблюдаемых странах
+ru: [в {time, case=loct}] {location} {"имела", gendered=previous_word} {value, ord} самый высокий {value_type} во всех наблюдаемых странах
+ru: [в {time, case=loct}] {location} {"имела", gendered=previous_word} {value, ord} самый высокое значение во всех наблюдаемых странах
 ru-head: в {time, case=loct} {location, case=gent} {value, ord} {value_type} самое высокое
 | value_type = cphi:.*:rank.*, value_type != .*rank_reverse.*
 
 # RANK_REVERSE
 
-ru: [в {time, case=loct}] {location} имел(-а) {value, ord} самый низкий {value_type} во всех наблюдаемых странах
-ru: [в {time, case=loct} ]{location} имел(-а) {value, ord} самое низкое для этого значение во всех наблюдаемых странах
+ru: [в {time, case=loct}] {location} {"имела", gendered=previous_word} {value, ord} самый низкий {value_type} во всех наблюдаемых странах
+ru: [в {time, case=loct}] {location} {"имела", gendered=previous_word} {value, ord} самое низкое для этого значение во всех наблюдаемых странах
 ru-head: в {time, case=loct} {location, case=gent} {value, ord} {value_type} самое низкое
 | value_type = cphi:.*:rank_reverse.*
 """
