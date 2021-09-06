@@ -23,8 +23,10 @@ class RussianMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):
                 verb_analysis = self.morph.parse(slot.value)[0]
                 if "femn" in analysis.tag:
                     modified_value = verb_analysis.inflect({"femn"}).word
-                else:
+                elif "masc" in analysis.tag:
                     modified_value = verb_analysis.inflect({"masc"}).word
+                elif "neut" in analysis.tag:
+                    modified_value = verb_analysis.inflect({"neut"}).word
                 log.debug("Realizing {} to Russian".format(modified_value))
         else:
             modified_value = slot.value
@@ -34,6 +36,38 @@ class RussianMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):
 
             log.debug("Realizing {} to Russian".format(modified_value))
 
+            # if a slot has more than one word, inflect them all
+            if " " in modified_value:
+                words = modified_value.split(" ")
+
+                multiword_value = ""
+                for word in words:
+                    possible_analyses = [
+                        analysis
+                        for analysis in self.morph.parse(word)
+                        if "nomn" in analysis.tag
+                    ]
+                    log.debug("Identified {} possible analyses".format(len(possible_analyses)))
+
+                    if len(possible_analyses) == 0:
+                        log.warning(
+                            "No valid morphological analysis for {}, unable to realize despite case attribute".format(modified_value)
+                        )
+                        return modified_value
+
+                    analysis = possible_analyses[0]
+                    log.debug("Picked {} as the morphological analysis of {}".format(analysis, word))
+
+                    modified_word = analysis.inflect({case}).word
+                    multiword_value += modified_word.capitalize() + " "
+
+                multiword_value = multiword_value.strip()
+
+                log.debug("Realized value is {}".format(multiword_value))
+
+                return multiword_value
+
+            # if a slot has one word
             possible_analyses = [
                 analysis
                 for analysis in self.morph.parse(modified_value)
