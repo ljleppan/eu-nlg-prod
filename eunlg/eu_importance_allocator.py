@@ -21,6 +21,7 @@ class EUImportanceSelector(NLGPipelineComponent):
         language: str,
         core_messages: List[Message],
         expanded_messages: List[Message],
+        previous_messages: List[Message],
     ):
         """
         Runs this pipeline component.

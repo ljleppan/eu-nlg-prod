@@ -121,10 +121,15 @@ def news() -> Union[Dict[str, Any], HTTPResponse]:
         response.status = 400
         return {"error": "Invalid value for 'location', query /locations for valid options."}
 
+    previous_location = json.get("previous_location", None)
+    if previous_location and previous_location not in service.get_locations(dataset):
+        response.status = 400
+        return {"error": "Invalid value for 'previous_location', query /locations for valid options."}
+
     # TODO: Read from params after support for more locations
     location_type = "C"
 
-    header, body = service.run_pipeline(language, dataset, location, location_type)
+    header, body = service.run_pipeline(language, dataset, location, location_type, previous_location)
     return dict(
         {"location": location, "location_type": location_type, "language": language, "header": header, "body": body}
     )
