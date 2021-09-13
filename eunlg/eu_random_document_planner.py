@@ -5,7 +5,7 @@ from typing import List, Optional, Tuple
 from core.document_planner import BodyDocumentPlanner, HeadlineDocumentPlanner
 from core.models import Message
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 MAX_PARAGRAPHS = 3
 

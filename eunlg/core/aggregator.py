@@ -8,7 +8,7 @@ from core.models import DocumentPlanNode, Literal, Message, Relation, Slot, Temp
 from core.pipeline import NLGPipelineComponent
 from core.registry import Registry
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 class Aggregator(NLGPipelineComponent):

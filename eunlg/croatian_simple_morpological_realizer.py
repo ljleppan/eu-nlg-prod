@@ -4,7 +4,7 @@ from typing import Optional
 from core.models import Slot
 from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 VOWELS = "aeiouyAEIOUY"
 
