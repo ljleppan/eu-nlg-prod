@@ -23,6 +23,7 @@ class EUNumberRealizer(NLGPipelineComponent):
             "en": {"car": EnglishCardinalRealizer(), "ord": EnglishOrdinalRealizer()},
             "hr": {"ord": CroatianOrdinalRealizer()},
             "de": {"car": GermanCardinalRealizer()},
+            "ru": {"ord": RussianOrdinalRealizer()},
         }
 
     def run(
@@ -194,3 +195,11 @@ class GermanCardinalRealizer(DictionaryRealizer):
 class CroatianOrdinalRealizer(Realizer):
     def realize(self, slot: Slot) -> str:
         return "{}.".format(slot.value)
+
+
+class RussianOrdinalRealizer(Realizer):
+    def realize(self, slot: Slot) -> str:
+        if str(slot.value) == "1":
+            # Rather than saying "1st highest" in Russian, it's sufficient to simply say "highest"
+            return ""
+        return "{}".format(slot.value)

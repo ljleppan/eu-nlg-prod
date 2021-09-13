@@ -19,8 +19,9 @@ from core.template_reader import read_templates
 from core.template_selector import TemplateSelector
 from croatian_simple_morpological_realizer import CroatianSimpleMorphologicalRealizer
 from english_uralicNLP_morphological_realizer import EnglishUralicNLPMorphologicalRealizer
+from russian_morphological_realizer import RussianMorphologicalRealizer
 from eu_context_sim_document_planner import EUContextSimHeadlineDocumentPlanner, EUContextSimBodyDocumentPlanner
-from eu_date_realizer import CroatianEUDateRealizer, EnglishEUDateRealizer, FinnishEUDateRealizer, GermanEUDateRealizer
+from eu_date_realizer import CroatianEUDateRealizer, EnglishEUDateRealizer, FinnishEUDateRealizer, GermanEUDateRealizer, RussianEUDateRealizer
 from eu_document_planner import EUBodyDocumentPlanner, EUHeadlineDocumentPlanner
 from eu_early_stop_document_planner import EUEarlyStopHeadlineDocumentPlanner, EUEarlyStopBodyDocumentPlanner
 from eu_importance_allocator import EUImportanceSelector
@@ -35,6 +36,7 @@ from resources.conjunctions_resource import CONJUNCTIONS
 from resources.cphi_croatian_resource import CPHICroatianResource
 from resources.cphi_english_resource import CPHIEnglishResource
 from resources.cphi_finnish_resource import CPHIFinnishResource
+from resources.cphi_russian_resource import CPHIRussianResource
 from resources.env_english_resource import ENVEnglishResource
 from resources.env_finnish_resource import ENVFinnishResource
 from resources.error_resource import ERRORS
@@ -84,6 +86,7 @@ class EUNlgService:
             CPHIEnglishResource(),
             CPHIFinnishResource(),
             CPHICroatianResource(),
+            CPHIRussianResource(),
             ENVEnglishResource(),
             ENVFinnishResource(),
             HealthCostEnglishResource(),
@@ -137,6 +140,7 @@ class EUNlgService:
                     "fi": FinnishEUDateRealizer(),
                     "hr": CroatianEUDateRealizer(),
                     "de": GermanEUDateRealizer(),
+                    "ru": RussianEUDateRealizer(),
                 }
             )
             yield EUEntityNameResolver()
@@ -146,6 +150,7 @@ class EUNlgService:
                     "en": EnglishUralicNLPMorphologicalRealizer(),
                     "fi": FinnishUralicNLPMorphologicalRealizer(),
                     "hr": CroatianSimpleMorphologicalRealizer(),
+                    "ru": RussianMorphologicalRealizer(),
                 }
             )
             yield HeadlineHTMLSurfaceRealizer() if headline else BodyHTMLSurfaceRealizer()

@@ -1,9 +1,9 @@
 import logging
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from uralicNLP import uralicApi
 
-from core.models import Slot
+from core.models import Slot, TemplateComponent
 from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
 
 log = logging.getLogger(__name__)
@@ -18,7 +18,7 @@ class EnglishUralicNLPMorphologicalRealizer(LanguageSpecificMorphologicalRealize
         if not uralicApi.is_language_installed("eng"):
             uralicApi.download("eng")
 
-    def realize(self, slot: Slot) -> str:
+    def realize(self, slot: Slot, left_context: List[TemplateComponent], right_context: List[TemplateComponent]) -> str:
         case: Optional[str] = slot.attributes.get("case")
         if case is None:
             return slot.value

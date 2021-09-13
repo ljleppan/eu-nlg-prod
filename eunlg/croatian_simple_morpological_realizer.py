@@ -1,7 +1,7 @@
 import logging
-from typing import Optional
+from typing import Optional, List
 
-from core.models import Slot
+from core.models import Slot, TemplateComponent
 from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
 
 log = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ class CroatianSimpleMorphologicalRealizer(LanguageSpecificMorphologicalRealizer)
     def __init__(self):
         super().__init__("hr")
 
-    def realize(self, slot: Slot) -> str:
+    def realize(self, slot: Slot, left_context: List[TemplateComponent], right_context: List[TemplateComponent]) -> str:
         case: Optional[str] = slot.attributes.get("case")
         if case is None:
             return slot.value
