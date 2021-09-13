@@ -9,7 +9,7 @@ from core.entity_name_resolver import EntityNameResolver
 from core.models import Slot
 from core.registry import Registry
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 class EUEntityNameResolver(EntityNameResolver):

@@ -6,7 +6,7 @@ from uralicNLP import uralicApi
 from core.models import Slot, TemplateComponent
 from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 class FinnishUralicNLPMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):

@@ -23,8 +23,11 @@ parser.add_argument("--force-cache-refresh", action="store_true", default=False,
 args = parser.parse_args()
 sys.argv = sys.argv[0:1]
 
-log = logging.getLogger("root")
-log.setLevel(logging.DEBUG)
+if __name__ != "__main__":
+    log = logging.getLogger(__name__)
+else:
+    log = logging.getLogger()
+log.setLevel(logging.INFO)
 
 formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(module)s - %(message)s")
 

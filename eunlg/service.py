@@ -45,7 +45,7 @@ from resources.health_cost_finnish_resource import HealthCostFinnishResource
 from resources.health_funding_english_resource import HealthFundingEnglishResource
 from resources.health_funding_finnish_resource import HealthFundingFinnishResource
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 class EUNlgService:

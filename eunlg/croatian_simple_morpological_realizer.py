@@ -4,7 +4,7 @@ from typing import Optional, List
 from core.models import Slot, TemplateComponent
 from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 VOWELS = "aeiouyAEIOUY"
 

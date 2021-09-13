@@ -8,7 +8,7 @@ from .models import DocumentPlanNode, Message, Slot, TemplateComponent
 from .pipeline import NLGPipelineComponent
 from .registry import Registry
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 class LanguageSpecificMorphologicalRealizer(ABC):

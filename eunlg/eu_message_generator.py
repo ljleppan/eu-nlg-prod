@@ -11,7 +11,7 @@ from core.message_generator import MessageGenerator, NoMessagesForSelectionExcep
 from core.models import Fact, Message
 from core.registry import Registry
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 class EUMessageGenerator(MessageGenerator):

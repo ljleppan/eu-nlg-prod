@@ -7,7 +7,7 @@ from numpy.random import Generator
 
 from .registry import Registry
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 class NLGPipelineComponent(ABC):
