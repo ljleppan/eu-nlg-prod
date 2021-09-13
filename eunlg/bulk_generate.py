@@ -6,7 +6,7 @@ from typing import List, Optional
 
 from service import EUNlgService
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 log.setLevel(logging.ERROR)
 
 

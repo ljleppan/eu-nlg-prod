@@ -8,7 +8,7 @@ from core.models import DocumentPlanNode, Slot
 from core.pipeline import NLGPipelineComponent
 from core.registry import Registry
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 class EUDateRealizer(NLGPipelineComponent):

@@ -8,7 +8,7 @@ from .models import DefaultTemplate, DocumentPlanNode, Message, Template
 from .pipeline import NLGPipelineComponent
 from .registry import Registry
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 # If we're starting a new paragraph and haven't mentioned the location for more than this number of
 # messages, say it again (if possible), even if it's not changed

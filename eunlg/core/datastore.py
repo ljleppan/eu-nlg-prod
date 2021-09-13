@@ -8,7 +8,7 @@ from typing import Callable, List, Optional, Union
 from pandas import DataFrame
 from pandas import HDFStore as PandasHDFStore
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 class DataStore(ABC):

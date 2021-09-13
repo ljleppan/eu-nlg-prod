@@ -53,7 +53,7 @@ from .models import (
     UnitSource,
 )
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 def canonical_map(map_dict):
