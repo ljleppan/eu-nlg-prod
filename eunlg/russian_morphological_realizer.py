@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 from core.models import Slot, TemplateComponent
 from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
@@ -42,16 +42,14 @@ class RussianMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):
 
                 multiword_value = ""
                 for word in words:
-                    possible_analyses = [
-                        analysis
-                        for analysis in self.morph.parse(word)
-                        if "nomn" in analysis.tag
-                    ]
+                    possible_analyses = [analysis for analysis in self.morph.parse(word) if "nomn" in analysis.tag]
                     log.debug("Identified {} possible analyses".format(len(possible_analyses)))
 
                     if len(possible_analyses) == 0:
                         log.warning(
-                            "No valid morphological analysis for {}, unable to realize despite case attribute".format(modified_value)
+                            "No valid morphological analysis for {}, unable to realize despite case attribute".format(
+                                modified_value
+                            )
                         )
                         return modified_value
 
@@ -68,16 +66,14 @@ class RussianMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):
                 return multiword_value
 
             # if a slot has one word
-            possible_analyses = [
-                analysis
-                for analysis in self.morph.parse(modified_value)
-                if "nomn" in analysis.tag
-            ]
+            possible_analyses = [analysis for analysis in self.morph.parse(modified_value) if "nomn" in analysis.tag]
 
             log.debug("Identified {} possible analyses".format(len(possible_analyses)))
             if len(possible_analyses) == 0:
                 log.warning(
-                    "No valid morphological analysis for {}, unable to realize despite case attribute".format(modified_value)
+                    "No valid morphological analysis for {}, unable to realize despite case attribute".format(
+                        modified_value
+                    )
                 )
                 return modified_value
 
@@ -91,4 +87,3 @@ class RussianMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):
             log.debug("Realized value is {}".format(modified_value))
 
         return modified_value
-
