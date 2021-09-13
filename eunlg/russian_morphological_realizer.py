@@ -6,7 +6,7 @@ from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
 
 import pymorphy2
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 class RussianMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):
