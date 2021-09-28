@@ -359,7 +359,7 @@ def read_template_group(
                     new_slot = Slot(to_value, attributes=attributes)
                     components.append(new_slot)
 
-            template = Template(components, list(zip(rules, rule_to_slot)))
+            template = Template(components, list(zip(rules, rule_to_slot)), "\n".join(constraint_lines))
             # Add this template to the list for the relevant language
             templates.setdefault(current_language, []).append(template)
 

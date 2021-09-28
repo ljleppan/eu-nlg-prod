@@ -221,6 +221,7 @@ class Template(DocumentPlanNode):
         self,
         components: List["TemplateComponent"],
         rules: Optional[List[Tuple[List["Matcher"], List[int]]]] = None,
+        rules_str: Optional[str] = None,
         slot_map: Optional[Dict[str, "Slot"]] = None,
     ) -> None:
 
@@ -233,6 +234,7 @@ class Template(DocumentPlanNode):
         for c in self._components:
             c.parent = self
         self._slots = None
+        self.rules_str = rules_str
 
     def get_slot(self, slot_type: str) -> "Slot":
         """
