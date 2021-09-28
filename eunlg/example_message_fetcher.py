@@ -105,7 +105,7 @@ def fetch_example_messages(dataset: str, template: Optional[Template], shuffle: 
     # Find a selection that covers all unique values for the "meta" fields. We are NOT finding all *combinations*
     # of values.
     selected_messages: List[Message] = []
-    for meta_col_name in ["location", "location_type", "timestamp", "timestamp_type", "agent", "agent_type"]:
+    for meta_col_name in ["location_type", "timestamp_type", "agent_type"]:
         unique_col_values = {getattr(msg.main_fact, meta_col_name) for msg in messages}
         for unique_value in unique_col_values:
 
