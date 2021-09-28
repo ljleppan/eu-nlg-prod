@@ -62,7 +62,8 @@ def obtain_example_messages_for_all_templates(
     log.info(f"Found a total of {len(templates)} templates for language '{language}' and dataset '{dataset}'")
 
     output: List[Tuple[Template, List[Message]]] = []
-    for template in templates:
+    for idx, template in enumerate(templates):
+        log.info(f"({idx}/{len(templates)}) Fetching messages for template {template}")
         example_messages = fetch_example_messages(dataset, template, shuffle)
         output.append((template, example_messages))
 
