@@ -198,6 +198,9 @@ def _gen_messages(
     if isinstance(timestamp, float):
         timestamp = str(int(timestamp))
 
+    if not timestamp.startswith("202"):
+        return
+
     for col_name in col_names:
         value_type = col_name
         value = row[col_name]
