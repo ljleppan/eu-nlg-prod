@@ -32,6 +32,7 @@ from eu_number_realizer import EUNumberRealizer
 from eu_random_document_planner import EURandomHeadlineDocumentPlanner, EURandomBodyDocumentPlanner
 from eu_topic_sim_document_planner import EUTopicSimHeadlineDocumentPlanner, EUTopicSimBodyDocumentPlanner
 from finnish_uralicNLP_morphological_realizer import FinnishUralicNLPMorphologicalRealizer
+from estonian_uralicNLP_morphological_realizer import EstonianUralicNLPMorphologicalRealizer
 from resources.conjunctions_resource import CONJUNCTIONS
 from resources.cphi_croatian_resource import CPHICroatianResource
 from resources.cphi_english_resource import CPHIEnglishResource
@@ -154,6 +155,7 @@ class EUNlgService:
                     "fi": FinnishUralicNLPMorphologicalRealizer(),
                     "hr": CroatianSimpleMorphologicalRealizer(),
                     "ru": RussianMorphologicalRealizer(),
+                    "ee": EstonianUralicNLPMorphologicalRealizer(),
                 }
             )
             yield HeadlineHTMLSurfaceRealizer() if headline else BodyHTMLSurfaceRealizer()
