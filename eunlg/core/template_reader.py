@@ -49,6 +49,7 @@ from .models import (
     ReferentialExpr,
     Slot,
     Template,
+    TemplateComponent,
     TimeSource,
     UnitSource,
 )
@@ -254,7 +255,7 @@ def read_template_group(
 
         # Allow alternative versions of a template to be specified using the [] notation for optional parts
         for expanded_template_line in expand_alternatives(template_line):
-            components = []  # type: List['TemplateComponent']
+            components = []  # type: List[TemplateComponent]
 
             # Generate list for mapping rules into template Slots
             rule_to_slot = []  # type: List[List[int]]
