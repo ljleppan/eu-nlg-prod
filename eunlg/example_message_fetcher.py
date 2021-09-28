@@ -126,7 +126,6 @@ def fetch_example_messages(dataset: str, template: Optional[Template], shuffle: 
             except StopIteration:
                 log.debug("\tDidn't have one, and can't find one. Skipping as an impossible combo.")
                 pass
-
     # Add messages s.t. all value_type values are covered.
     value_types = [
         col_name
@@ -296,10 +295,5 @@ def msg_as_realized_dict(message: Message, template: Template, language: str) ->
 
 
 if __name__ == "__main__":
-    print("asd")
-    log.setLevel(logging.DEBUG)
-    log.debug("test")
-    print("asd")
-
     for (tmpl, example_msgs) in obtain_example_messages_for_all_templates("cphi", "en", shuffle=True):
         print(f"{len(example_msgs)} example messages found for template {tmpl}")
