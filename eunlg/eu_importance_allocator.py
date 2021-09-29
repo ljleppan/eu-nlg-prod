@@ -6,9 +6,12 @@ from typing import List
 
 from numpy.random.mtrand import RandomState
 
+from collections import defaultdict
+
 from core.models import Message
 from core.pipeline import NLGPipelineComponent
 from core.registry import Registry
+
 
 log = logging.getLogger("root")
 
@@ -26,14 +29,55 @@ class EUImportanceSelector(NLGPipelineComponent):
         """
         Runs this pipeline component.
         """
+
         core_messages = self.score_importance(core_messages, registry)
-        core_messages = sorted(core_messages, key=lambda x: float(x.score), reverse=True)
-
+       
         expanded_messages = self.score_importance(expanded_messages, registry)
+
+
+        # INCREASE COHESION: boost messages that refer to similar facts as previous ones
+        key_components = defaultdict(lambda: defaultdict(int))
+        for m in previous_messages:
+            key_components[m.main_fact.value_type][m.main_fact.timestamp] = m.score
+
+        log.debug("KEY_COMPONENTS: %s" %key_components)
+        
+        START_INCREASE = 10
+        for m in core_messages:
+            # defaultdict will return 0 for undefined values
+            # 0/START_INCREASE+1 = 1 --> do nothing
+            # if in previous messages this type of information has score > START INCREASE
+            # then increase message weight
+            coef = key_components[m.main_fact.value_type][m.main_fact.timestamp]/START_INCREASE+1
+            log.debug("*******M: %s SCORE: %s COEF: %s" %(m,m.score,coef))
+            
+            m.score = m.score * coef
+            log.debug("NEW: %s" %m.score)
+
+
+        # AVOID REDUNDANCE: can repeat at most one previous message
+        EXP_BASE = 1.1
+        prev_locs = set([m.main_fact.location for m in previous_messages])       
+        log.debug("PREV_LOCS: %s" %prev_locs)
+        
+
+        if prev_locs:
+            pl = list(prev_locs)[0]
+            
+            max_prev_scores = max([m.score for m in expanded_messages if m.main_fact.location in prev_locs])
+            denominator = math.pow(EXP_BASE, max_prev_scores)
+
+            for m in expanded_messages:
+                if m.main_fact.location in prev_locs:                   
+                    #log.debug("*******M: %s COEF: %s SCORE %s"%(m, math.pow(EXP_BASE, m.score)/denominator, m.score))
+                    m.score *= math.pow(EXP_BASE, m.score) / denominator                    
+                    #log.debug("NEW: %s" %m.score)
+                
+        # sort and return
+        core_messages = sorted(core_messages, key=lambda x: float(x.score), reverse=True)
         expanded_messages = sorted(expanded_messages, key=lambda x: float(x.score), reverse=True)
-
         return core_messages, expanded_messages
-
+            
     def score_importance(self, messages: List[Message], registry: Registry) -> List[Message]:
         for msg in messages:
             msg.score = self.score_importance_single(msg, registry)
@@ -119,7 +163,6 @@ class EUImportanceSelector(NLGPipelineComponent):
             prev_year = min(1.0, (1 / (datetime.datetime.now().year + 1 - (int(year) - 1))) ** 2)
             month_effect = (this_year - prev_year) / (int(month) + 1)
             timestamp_score *= this_year - month_effect
-
         # total importance score
         message_score = where_type_score * what_score * timestamp_score
         # message_score = "{:.5f}".format(message_score)
