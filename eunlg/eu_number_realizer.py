@@ -24,6 +24,7 @@ class EUNumberRealizer(NLGPipelineComponent):
             "hr": {"ord": CroatianOrdinalRealizer()},
             "de": {"car": GermanCardinalRealizer()},
             "ru": {"ord": RussianOrdinalRealizer()},
+            "sl": {"car": SlovenianCardinalRealizer(), "ord": SlovenianOrdinalRealizer()},
         }
 
     def run(
@@ -201,5 +202,46 @@ class RussianOrdinalRealizer(Realizer):
     def realize(self, slot: Slot) -> str:
         if str(slot.value) == "1":
             # Rather than saying "1st highest" in Russian, it's sufficient to simply say "highest"
+            return ""
+        return "{}".format(slot.value)
+
+
+class SlovenianCardinalRealizer(DictionaryRealizer):
+    def __init__(self):
+        super(SlovenianCardinalRealizer, self).__init__(
+            {
+                "1":  "ena",
+                "2":  "dva",
+                "3":  "tri",
+                "4":  "štiri",
+                "5":  "pet",
+                "6":  "šest",
+                "7":  "sedem",
+                "8":  "osem",
+                "9":  "devet",
+                "10": "deset",
+            }
+        )
+
+
+class SlovenianOrdinalRealizer(Realizer):
+    SMALL_ORDINALS: Dict[str, str] = {
+        "1":  "prvi",
+        "2":  "drugi",
+        "3":  "tretji",
+        "4":  "četrti",
+        "5":  "peti",
+        "6":  "šesti",
+        "7":  "sedmi",
+        "8":  "osmi",
+        "9":  "deveti",
+        "10": "deseti",
+        "11": "enajsti",
+        "12": "dvanajsti",
+    }
+
+    def realize(self, slot: Slot) -> str:
+        if str(slot.value) == "1":
+            # Rather than saying "1st highest" in Slovenian, it's sufficient to simply say "highest" (?)
             return ""
         return "{}".format(slot.value)

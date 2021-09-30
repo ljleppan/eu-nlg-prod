@@ -21,7 +21,7 @@ from croatian_simple_morpological_realizer import CroatianSimpleMorphologicalRea
 from english_uralicNLP_morphological_realizer import EnglishUralicNLPMorphologicalRealizer
 from russian_morphological_realizer import RussianMorphologicalRealizer
 from eu_context_sim_document_planner import EUContextSimHeadlineDocumentPlanner, EUContextSimBodyDocumentPlanner
-from eu_date_realizer import CroatianEUDateRealizer, EnglishEUDateRealizer, FinnishEUDateRealizer, GermanEUDateRealizer, RussianEUDateRealizer
+from eu_date_realizer import CroatianEUDateRealizer, EnglishEUDateRealizer, FinnishEUDateRealizer, GermanEUDateRealizer, RussianEUDateRealizer, SlovenianEUDateRealizer
 from eu_document_planner import EUBodyDocumentPlanner, EUHeadlineDocumentPlanner
 from eu_early_stop_document_planner import EUEarlyStopHeadlineDocumentPlanner, EUEarlyStopBodyDocumentPlanner
 from eu_importance_allocator import EUImportanceSelector
@@ -37,6 +37,7 @@ from resources.cphi_croatian_resource import CPHICroatianResource
 from resources.cphi_english_resource import CPHIEnglishResource
 from resources.cphi_finnish_resource import CPHIFinnishResource
 from resources.cphi_russian_resource import CPHIRussianResource
+from resources.cphi_slovenian_resource import CPHISlovenianResource
 from resources.env_english_resource import ENVEnglishResource
 from resources.env_finnish_resource import ENVFinnishResource
 from resources.error_resource import ERRORS
@@ -87,6 +88,7 @@ class EUNlgService:
             CPHIFinnishResource(),
             CPHICroatianResource(),
             CPHIRussianResource(),
+            CPHISlovenianResource(),
             ENVEnglishResource(),
             ENVFinnishResource(),
             HealthCostEnglishResource(),
@@ -141,6 +143,7 @@ class EUNlgService:
                     "hr": CroatianEUDateRealizer(),
                     "de": GermanEUDateRealizer(),
                     "ru": RussianEUDateRealizer(),
+                    "sl": SlovenianEUDateRealizer(),
                 }
             )
             yield EUEntityNameResolver()

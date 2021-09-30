@@ -174,3 +174,10 @@ class RussianEUDateRealizer(EUDateRealizer):
         from resources.date_expression_resource import RUSSIAN
 
         super().__init__(RUSSIAN)
+
+
+class SlovenianEUDateRealizer(EUDateRealizer):
+    def __init__(self):
+        from resources.date_expression_resource import SLOVENIAN
+
+        super().__init__(SLOVENIAN)

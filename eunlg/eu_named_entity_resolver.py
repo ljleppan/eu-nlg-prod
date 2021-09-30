@@ -51,6 +51,13 @@ class EUEntityNameResolver(EntityNameResolver):
                     "pronoun": RussianEULocationNameResolver(),
                 }
             },
+            "sl": {
+                "country": {
+                    "full": SlovenianEULocationNameResolver(),
+                    "short": SlovenianEULocationNameResolver(),
+                    "pronoun": SlovenianEULocationNameResolver(),
+                }
+            },
         }
 
     def is_entity(self, maybe_entity: Any) -> bool:
@@ -136,3 +143,10 @@ class RussianEULocationNameResolver(EUEntityNameDictionaryResolver):
         from resources.country_name_resource import RUSSIAN
 
         super().__init__(RUSSIAN)
+
+
+class SlovenianEULocationNameResolver(EUEntityNameDictionaryResolver):
+    def __init__(self):
+        from resources.country_name_resource import SLOVENIAN
+
+        super().__init__(SLOVENIAN)

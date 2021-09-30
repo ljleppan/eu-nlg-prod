@@ -111,3 +111,25 @@ RUSSIAN: Dict[str, Union[Val, Dict[str, Val]]] = {
     "month-year-expression": "{month} {year}",
     "year-expression": "{year}",
 }
+
+SLOVENIAN: Dict[str, Union[Val, Dict[str, Val]]] = {
+    "month": {
+        "01": "Januar",
+        "02": "Februar",
+        "03": "Marec",
+        "04": "April",
+        "05": "Maj",
+        "06": "Junij",
+        "07": "Julij",
+        "08": "Avgust",
+        "09": "September",
+        "10": "Oktober",
+        "11": "November",
+        "12": "December",
+        "reference_options": "isti mesec",
+    },
+    "year": {"reference_options": "isto leto"},
+    "month-expression": "{month}",
+    "month-year-expression": "{month} {year}",
+    "year-expression": "{year}",
+}
