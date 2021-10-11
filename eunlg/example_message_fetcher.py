@@ -22,7 +22,7 @@ from eu_number_realizer import EUNumberRealizer
 from finnish_uralicNLP_morphological_realizer import FinnishUralicNLPMorphologicalRealizer
 from service import EUNlgService
 
-log = logging.getLogger("root")
+log = logging.getLogger(__name__)
 
 
 SERVICE = EUNlgService()

@@ -12,7 +12,7 @@ from transformers import MarianTokenizer, MarianMTModel
 
 import example_message_fetcher
 
-logger = logging.getLogger("root")
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
