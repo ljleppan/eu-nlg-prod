@@ -21,7 +21,6 @@ from eu_named_entity_resolver import EUEntityNameResolver
 from eu_number_realizer import EUNumberRealizer
 from finnish_uralicNLP_morphological_realizer import FinnishUralicNLPMorphologicalRealizer
 from service import EUNlgService
-from service import translator as TRANSLATOR
 
 log = logging.getLogger("root")
 
@@ -37,7 +36,7 @@ DATE_REALIZER = LanguageSplitComponent(
         "de": GermanEUDateRealizer(),
     }
 )
-ENTITY_NAME_RESOLVER = EUEntityNameResolver(TRANSLATOR)
+ENTITY_NAME_RESOLVER = EUEntityNameResolver()
 NUMBER_REALIZER = EUNumberRealizer()
 MORPHOLOGICAL_REALIZER = MorphologicalRealizer(
     {
