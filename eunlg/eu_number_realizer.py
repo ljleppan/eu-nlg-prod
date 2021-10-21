@@ -244,4 +244,4 @@ class SlovenianOrdinalRealizer(Realizer):
         if str(slot.value) == "1":
             # Rather than saying "1st highest" in Slovenian, it's sufficient to simply say "highest" (?)
             return ""
-        return "{}".format(slot.value)
+        return "{}.".format(slot.value)
