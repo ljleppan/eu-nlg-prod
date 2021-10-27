@@ -43,7 +43,7 @@ from resources.health_cost_finnish_resource import HealthCostFinnishResource
 from resources.health_funding_english_resource import HealthFundingEnglishResource
 from resources.health_funding_finnish_resource import HealthFundingFinnishResource
 from template_attacher import TemplateAttacher
-from template_remover import TemplateRemover
+from embedding_remover import EmbeddingRemover
 
 log = logging.getLogger("root")
 
@@ -130,9 +130,9 @@ class EUNlgService:
                 if headline:
                     yield EUHeadlineDocumentPlanner()
                 else:
-                    yield TemplateAttacher()  # Temporarily attach templates for doc planning
+                    yield TemplateAttacher()
                     yield EUNeuralSimBodyDocumentPlanner()
-                    yield TemplateRemover()  # Remove temporary templates in preparation for proper template selection
+                    yield EmbeddingRemover()
 
             elif planner == "full":
                 yield EUHeadlineDocumentPlanner() if headline else EUBodyDocumentPlanner()

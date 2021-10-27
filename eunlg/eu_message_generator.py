@@ -93,7 +93,7 @@ class EUMessageGenerator(MessageGenerator):
             raise NoMessagesForSelectionException("No core messages")
 
         # Remove all but 10k most interesting expanded messages
-        expanded_messages = sorted(expanded_messages, key=lambda msg: msg.score, reverse=True)[:2_500]
+        expanded_messages = sorted(expanded_messages, key=lambda msg: msg.score, reverse=True)[:10_000]
         log.info(f"Filtered expanded messages to top {len(expanded_messages)}")
 
         return core_messages, expanded_messages

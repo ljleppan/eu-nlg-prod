@@ -1,4 +1,3 @@
-import itertools
 import logging
 from typing import List
 
@@ -11,19 +10,21 @@ from core.registry import Registry
 log = logging.getLogger("root")
 
 
-class TemplateRemover(NLGPipelineComponent):
+class EmbeddingRemover(NLGPipelineComponent):
     def run(
         self,
         registry: Registry,
         random: RandomState,
         language: str,
-        core_messages: List[Message],
-        expanded_messages: List[Message],
+        documentplan: List[Message],
+        messages: List[Message],
     ):
         """
         Runs this pipeline component.
         """
-        for msg in itertools.chain(core_messages, expanded_messages):
+        for msg in messages:
             msg.template = None
+            if hasattr(msg, "embedding"):
+                delattr(msg, "embedding")
 
-        return core_messages, expanded_messages
+        return documentplan, messages

@@ -53,11 +53,6 @@ class TemplateAttacher(NLGPipelineComponent):
             date_realizer.run(registry, random, language, doc_plan)
             entity_name_resolver.run(registry, random, language, doc_plan)
             number_realizer.run(registry, random, language, doc_plan)
-            # i += 1
-            # if i >= 1000:
-            #    end = time.time()
-            #    print(f"{i} enties took {end-start:.20f} time")
-            #    raise ValueError()
 
         log.setLevel(original_log_level)
         log.info(f"Log level restored to {original_log_level}")

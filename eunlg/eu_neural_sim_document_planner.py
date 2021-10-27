@@ -149,7 +149,7 @@ def _select_satellites_for_nucleus(
     core_msgs = 1
     expanded_msgs = 0
     while True:
-
+        log.info("Selecting next nucleus")
         # Modify scores to account for context
         scored_available_core_messages = [
             (message.score, message) for message in available_core_messages if message.score > 0
@@ -164,21 +164,23 @@ def _select_satellites_for_nucleus(
         # else:
         #    scored_available_expanded_messages = []
         scored_available_messages = scored_available_core_messages + scored_available_expanded_messages
-        scores_v_nucleus = _sim_score(scored_available_messages, nucleus)
-        scores_v_nucleus = {message: score for (score, message) in scores_v_nucleus}
-        scores_v_prev = _sim_score(scored_available_messages, previous)
+        short_list = sorted(scored_available_messages, key=lambda pair: pair[0], reverse=True)[:1000]
 
-        scored_available_messages = []
+        scores_v_nucleus = _sim_score(short_list, nucleus)
+        scores_v_nucleus = {message: score for (score, message) in scores_v_nucleus}
+        scores_v_prev = _sim_score(short_list, previous)
+
+        short_list = []
         W_NUCLEUS = 1  # Set this to >1 to increase the weight of the nucleus when comparing similarity
         for score_v_prev, message in scores_v_prev:
             score_v_nuc = scores_v_nucleus[message]
             weighted_average_score = (W_NUCLEUS * score_v_nuc + score_v_prev) / (W_NUCLEUS + 1)
-            scored_available_messages.append((weighted_average_score, message))
+            short_list.append((weighted_average_score, message))
 
         # Filter out based on thresholds
         filtered_scored_available = [
             (score, message)
-            for (score, message) in scored_available_messages
+            for (score, message) in short_list
             if score > SATELLITE_RELATIVE_THRESHOLD * nucleus.score or score > SATELLITE_ABSOLUTE_THRESHOLD
         ]
         log.debug(
@@ -194,7 +196,7 @@ def _select_satellites_for_nucleus(
                     "No satellite candidates pass threshold but have not reached MIN_SATELLITES_PER_NUCLEUS. "
                     "Trying without filter."
                 )
-                filtered_scored_available = scored_available_messages
+                filtered_scored_available = short_list
             else:
                 log.debug("Did not reach MIN_SATELLITES_PER_NUCLEUS, but ran out of candidates. Ending paragraphs.")
                 return satellites
@@ -231,11 +233,12 @@ def _select_satellites_for_nucleus(
 
 
 def _sim_score(candidates: List[Tuple[float, Message]], context: Message) -> List[Tuple[float, Message]]:
+    for (score, candidate) in candidates:
+        if not hasattr(candidate, "embedding"):
+            candidate.embedding = to_sentence_embedding(candidate)
+
     context_embedding = to_sentence_embedding(context)
-    return [
-        (COS(to_sentence_embedding(candidate), context_embedding).item() * score, candidate)
-        for score, candidate in candidates
-    ]
+    return [(COS(candidate.embedding, context_embedding).item() * score, candidate) for score, candidate in candidates]
 
 
 def to_sentence_embedding(message: Message) -> torch.Tensor:
@@ -248,5 +251,9 @@ def to_sentence_embedding(message: Message) -> torch.Tensor:
     tokenised_message = torch.tensor([tokenizer.encode(msg_text, add_special_tokens=True)])
     word_embeddings = model(tokenised_message)[0]
     sentence_embedding = word_embeddings.mean(dim=1)
-    # message.template = sentence_embedding
+
+    del msg_text
+    del tokenised_message
+    del word_embeddings
+
     return sentence_embedding
