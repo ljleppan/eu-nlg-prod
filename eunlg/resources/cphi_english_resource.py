@@ -49,14 +49,14 @@ en-head: in {location}, in {time}, {value_type} tied with US
 
 en: [in {time},] {location} had the {value, ord} highest {value_type} across the observed countries
 en: [in {time},] {location} had the {value, ord} highest value for it across the observed countries
-en-head: in {time}, {location, case=gen} {value, ord} {value_type} highest
+en-head: in {time}, {location, case=gen} {value_type} {value, ord} highest
 | value_type = cphi:.*:rank.*, value_type != .*rank_reverse.*
 
 # RANK_REVERSE
 
 en: [in {time},] {location} had the {value, ord} lowest {value_type} across the observed countries
 en: [in {time}, ]{location} had the {value, ord} lowest value for it across the observed countries
-en-head: in {time}, {location, case=gen} {value, ord} {value_type} lowest
+en-head: in {time}, {location, case=gen} {value_type} {value, ord} lowest
 | value_type = cphi:.*:rank_reverse.*
 """
 

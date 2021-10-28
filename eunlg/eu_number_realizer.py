@@ -24,6 +24,7 @@ class EUNumberRealizer(NLGPipelineComponent):
             "hr": {"ord": CroatianOrdinalRealizer()},
             "de": {"car": GermanCardinalRealizer()},
             "ru": {"ord": RussianOrdinalRealizer()},
+            "ee": {"car": EstonianCardinalRealizer(), "ord": EstonianOrdinalRealizer()},
         }
 
     def run(
@@ -203,3 +204,38 @@ class RussianOrdinalRealizer(Realizer):
             # Rather than saying "1st highest" in Russian, it's sufficient to simply say "highest"
             return ""
         return "{}".format(slot.value)
+
+class EstonianCardinalRealizer(DictionaryRealizer):
+    def __init__(self):
+        super(EstonianCardinalRealizer, self).__init__(
+            {
+                "1":  "üks",
+                "2":  "kaks",
+                "3":  "kolm",
+                "4":  "neli",
+                "5":  "viis",
+                "6":  "kuus",
+                "7":  "seitse",
+                "8":  "kaheksa",
+                "9":  "üheksa",
+                "10": "kümme",
+            }
+        )
+
+
+class EstonianOrdinalRealizer(Realizer):
+    SMALL_ORDINALS: Dict[str, str] = {
+        "1":  "esimene",
+        "2":  "teine",
+        "3":  "kolmas",
+        "4":  "neljas",
+        "5":  "viies",
+        "6":  "kuues",
+        "7":  "seitsmes",
+        "8":  "kaheksas",
+        "9":  "üheksas",
+        "10": "kümnes",
+    }
+
+    def realize(self, slot: Slot) -> str:
+        return self.SMALL_ORDINALS.get(slot.value, "{}.".format(slot.value))

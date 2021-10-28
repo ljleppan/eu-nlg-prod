@@ -26,4 +26,11 @@ CONJUNCTIONS: Dict[str, Dict[str, str]] = {
         "subord_clause_start": ", который",
         "comparator": "чем",
     },
+    "ee": {
+        "default_combiner": "ja",
+        "inverse_combiner": "aga",
+        "subord_clause_start": ", mis on",
+        "comparator": "kui",
+    },
+
 }

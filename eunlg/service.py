@@ -27,6 +27,7 @@ from eu_date_realizer import (
     FinnishEUDateRealizer,
     GermanEUDateRealizer,
     RussianEUDateRealizer,
+    EstonianEUDateRealizer,
 )
 from eu_document_planner import EUBodyDocumentPlanner, EUHeadlineDocumentPlanner
 from eu_early_stop_document_planner import EUEarlyStopHeadlineDocumentPlanner, EUEarlyStopBodyDocumentPlanner
@@ -39,11 +40,13 @@ from eu_number_realizer import EUNumberRealizer
 from eu_random_document_planner import EURandomHeadlineDocumentPlanner, EURandomBodyDocumentPlanner
 from eu_topic_sim_document_planner import EUTopicSimHeadlineDocumentPlanner, EUTopicSimBodyDocumentPlanner
 from finnish_uralicNLP_morphological_realizer import FinnishUralicNLPMorphologicalRealizer
+from estonian_uralicNLP_morphological_realizer import EstonianUralicNLPMorphologicalRealizer
 from resources.conjunctions_resource import CONJUNCTIONS
 from resources.cphi_croatian_resource import CPHICroatianResource
 from resources.cphi_english_resource import CPHIEnglishResource
 from resources.cphi_finnish_resource import CPHIFinnishResource
 from resources.cphi_russian_resource import CPHIRussianResource
+from resources.cphi_estonian_resource import CPHIEstonianResource
 from resources.env_english_resource import ENVEnglishResource
 from resources.env_finnish_resource import ENVFinnishResource
 from resources.error_resource import ERRORS
@@ -96,6 +99,7 @@ class EUNlgService:
             CPHIFinnishResource(),
             CPHICroatianResource(),
             CPHIRussianResource(),
+            CPHIEstonianResource(),
             ENVEnglishResource(),
             ENVFinnishResource(),
             HealthCostEnglishResource(),
@@ -158,6 +162,7 @@ class EUNlgService:
                     "hr": CroatianEUDateRealizer(),
                     "de": GermanEUDateRealizer(),
                     "ru": RussianEUDateRealizer(),
+                    "ee": EstonianEUDateRealizer(),
                 }
             )
             yield EUEntityNameResolver()
@@ -168,6 +173,7 @@ class EUNlgService:
                     "fi": FinnishUralicNLPMorphologicalRealizer(),
                     "hr": CroatianSimpleMorphologicalRealizer(),
                     "ru": RussianMorphologicalRealizer(),
+                    "ee": EstonianUralicNLPMorphologicalRealizer(),
                 }
             )
             yield HeadlineHTMLSurfaceRealizer() if headline else BodyHTMLSurfaceRealizer()

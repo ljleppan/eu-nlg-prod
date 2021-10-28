@@ -111,3 +111,25 @@ RUSSIAN: Dict[str, Union[Val, Dict[str, Val]]] = {
     "month-year-expression": "{month} {year}",
     "year-expression": "{year}",
 }
+
+ESTONIAN: Dict[str, Union[Val, Dict[str, Val]]] = {
+    "month": {
+        "01": "Jaanuar",
+        "02": "Veebruar",
+        "03": "Märts",
+        "04": "Aprill",
+        "05": "Mai",
+        "06": "Juuni",
+        "07": "Juuli",
+        "08": "August",
+        "09": "September",
+        "10": "Oktoober",
+        "11": "November",
+        "12": "Detsember",
+        "reference_options": "samal kuul",
+    },
+    "year": {"reference_options": "samal aastal"},
+    "month-expression": "{month}",
+    "month-year-expression": "{month} {year}",
+    "year-expression": "{year}. aastal",
+}
