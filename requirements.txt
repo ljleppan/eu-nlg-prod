@@ -1,4 +1,4 @@
-bottle==0.12.17
+bottle>=0.12.19
 bottle-swagger-2==2.0.9
 meinheld==1.0.1
 numpy==1.17.2
@@ -14,4 +14,4 @@ pymorphy2-dicts-ru==2.4.417127.4579844
 torch==1.7.1
 transformers==4.3.3
 sentencepiece==0.1.95
-nltk==3.2.5
+nltk>=3.6.4
