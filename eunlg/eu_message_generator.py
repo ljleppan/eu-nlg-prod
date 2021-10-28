@@ -1,4 +1,5 @@
 import logging
+from collections import deque
 from datetime import datetime
 from math import isnan
 from typing import List, Optional, Tuple
@@ -8,8 +9,11 @@ from pandas import Series
 
 from core.datastore import DataFrameStore
 from core.message_generator import MessageGenerator, NoMessagesForSelectionException
-from core.models import Fact, Message
+from core.models import Fact, Message, DocumentPlanNode
+from core.pipeline import NLGPipeline
 from core.registry import Registry
+from eu_document_planner import EUHeadlineDocumentPlanner, EUBodyDocumentPlanner
+from eu_importance_allocator import EUImportanceSelector
 
 log = logging.getLogger(__name__)
 
@@ -31,11 +35,12 @@ class EUMessageGenerator(MessageGenerator):
         location_query: str,
         location_type_query: str,
         dataset: str,
+        previous_location: str,
         ignored_cols: Optional[List[str]] = None,
-    ) -> Tuple[List[Message], List[Message]]:
+    ) -> Tuple[List[Message], List[Message], List[Message]]:
         log.info(
-            "Generating messages with location={}, location_type={}, data={}".format(
-                location_query, location_type_query, dataset,
+            "Generating messages with location={}, location_type={}, data={}, previous_location={}".format(
+                location_query, location_type_query, dataset, previous_location
             )
         )
 
@@ -96,7 +101,15 @@ class EUMessageGenerator(MessageGenerator):
         expanded_messages = sorted(expanded_messages, key=lambda msg: msg.score, reverse=True)[:10_000]
         log.info(f"Filtered expanded messages to top {len(expanded_messages)}")
 
-        return core_messages, expanded_messages
+        if previous_location:
+            log.info("Have previous_location, generating stuff for that")
+            previous_location_messages = self._gen_messages_for_previous_location(
+                registry, language, location_query, dataset, previous_location
+            )
+        else:
+            previous_location_messages = []
+
+        return core_messages, expanded_messages, previous_location_messages
 
     def _gen_messages(
         self,
@@ -157,3 +170,31 @@ class EUMessageGenerator(MessageGenerator):
 
             message = Message(facts=fact, importance_coefficient=importance_coefficient, polarity=polarity)
             messages.append(message)
+
+    def _gen_messages_for_previous_location(
+        self, registry: Registry, language: str, location_type: str, dataset: str, previous_location: str,
+    ) -> List[Message]:
+        pipeline = NLGPipeline(
+            registry,
+            EUMessageGenerator(expand=True),
+            EUImportanceSelector(),
+            EUHeadlineDocumentPlanner() if "-head" in language else EUBodyDocumentPlanner(),
+        )
+
+        previous_docplan = pipeline.run((previous_location, location_type, dataset, None), language)[0]
+        assert isinstance(previous_docplan, DocumentPlanNode)
+
+        log.debug(f"PREVIOUS DOCPLAN: {previous_docplan}")
+
+        messages: List[Message] = []
+        queue = deque([previous_docplan])
+        while queue:
+            item = queue.pop()
+            if isinstance(item, Message):
+                messages.append(item)
+            else:
+                queue.extend(item.children)
+
+        log.debug(f"PREVIOUS MESSAGES: {messages}")
+
+        return messages

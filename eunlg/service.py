@@ -238,11 +238,13 @@ class EUNlgService:
     def get_languages(self):
         return list({language for resource in self.resources for language in resource.supported_languages})
 
-    def run_pipeline(self, language: str, dataset: str, location: str, location_type: str) -> Tuple[str, str]:
+    def run_pipeline(
+        self, language: str, dataset: str, location: str, location_type: str, previous_location: str
+    ) -> Tuple[str, str]:
         log.info("Running headline NLG pipeline")
         try:
             headline_lang = "{}-head".format(language)
-            headline = self.headline_pipeline.run((location, location_type, dataset), headline_lang,)
+            headline = self.headline_pipeline.run((location, location_type, dataset, previous_location), headline_lang,)
             log.info("Headline pipeline complete")
         except Exception as ex:
             headline = location
@@ -250,12 +252,13 @@ class EUNlgService:
 
         # TODO: Figure out what DATA is supposed to be here?!
         log.info(
-            "Running Body NLG pipeline: language={}, dataset={}, location={}, location_type={}".format(
-                language, dataset, location, location_type
+            "Running Body NLG pipeline: "
+            "language={}, dataset={}, location={}, location_type={}, previous_location={}".format(
+                language, dataset, location, location_type, previous_location
             )
         )
         try:
-            body = self.body_pipeline.run((location, location_type, dataset), language)
+            body = self.body_pipeline.run((location, location_type, dataset, previous_location), language)
             log.info("Body pipeline complete")
         except NoMessagesForSelectionException:
             log.error("User selection returned no messages")
