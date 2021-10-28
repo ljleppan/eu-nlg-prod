@@ -58,12 +58,14 @@ class EUImportanceSelector(NLGPipelineComponent):
             log.debug("PREV_LOCS: %s" % prev_locs)
 
             if prev_locs:
-                max_prev_scores = max([m.score for m in expanded_messages if m.main_fact.location in prev_locs])
-                denominator = math.pow(EXP_BASE, max_prev_scores)
+                expanded_in_prev = [m.score for m in expanded_messages if m.main_fact.location in prev_locs]
+                if expanded_in_prev:
+                    max_prev_scores = max(expanded_in_prev)
+                    denominator = math.pow(EXP_BASE, max_prev_scores)
 
-                for m in expanded_messages:
-                    if m.main_fact.location in prev_locs:
-                        m.score *= math.pow(EXP_BASE, m.score) / denominator
+                    for m in expanded_messages:
+                        if m.main_fact.location in prev_locs:
+                            m.score *= math.pow(EXP_BASE, m.score) / denominator
 
         # sort and return
         core_messages = sorted(core_messages, key=lambda x: float(x.score), reverse=True)

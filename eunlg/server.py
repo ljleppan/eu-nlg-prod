@@ -33,7 +33,7 @@ formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(module)s - %(
 
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
-stream_handler.setLevel(logging.INFO)
+stream_handler.setLevel(logging.DEBUG)
 
 rotating_file_handler = logging.handlers.RotatingFileHandler(
     Path(__file__).parent / ".." / "reporter.log",

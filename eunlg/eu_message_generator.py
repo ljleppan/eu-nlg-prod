@@ -106,6 +106,7 @@ class EUMessageGenerator(MessageGenerator):
             previous_location_messages = self._gen_messages_for_previous_location(
                 registry, language, location_query, dataset, previous_location
             )
+            log.info("Finished generating previous location related things")
         else:
             previous_location_messages = []
 
