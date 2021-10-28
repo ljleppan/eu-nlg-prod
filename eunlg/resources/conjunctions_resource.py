@@ -20,17 +20,17 @@ CONJUNCTIONS: Dict[str, Dict[str, str]] = {
         "comparator": "als",
     },
     "hr": {"default_combiner": "i", "inverse_combiner": "ali"},
-    "ru": {
-        "default_combiner": "и",
-        "inverse_combiner": "но",
-        "subord_clause_start": ", который",
-        "comparator": "чем",
-    },
+    "ru": {"default_combiner": "и", "inverse_combiner": "но", "subord_clause_start": ", который", "comparator": "чем"},
     "ee": {
         "default_combiner": "ja",
         "inverse_combiner": "aga",
         "subord_clause_start": ", mis on",
         "comparator": "kui",
     },
-
+    "sl": {
+        "default_combiner": "in",
+        "inverse_combiner": "ampak",
+        "subord_clause_start": ", ki je",
+        "comparator": "kot",
+    },
 }

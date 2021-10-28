@@ -28,6 +28,7 @@ from eu_date_realizer import (
     GermanEUDateRealizer,
     RussianEUDateRealizer,
     EstonianEUDateRealizer,
+    SlovenianEUDateRealizer,
 )
 from eu_document_planner import EUBodyDocumentPlanner, EUHeadlineDocumentPlanner
 from eu_early_stop_document_planner import EUEarlyStopHeadlineDocumentPlanner, EUEarlyStopBodyDocumentPlanner
@@ -47,6 +48,7 @@ from resources.cphi_english_resource import CPHIEnglishResource
 from resources.cphi_finnish_resource import CPHIFinnishResource
 from resources.cphi_russian_resource import CPHIRussianResource
 from resources.cphi_estonian_resource import CPHIEstonianResource
+from resources.cphi_slovenian_resource import CPHISlovenianResource
 from resources.env_english_resource import ENVEnglishResource
 from resources.env_finnish_resource import ENVFinnishResource
 from resources.error_resource import ERRORS
@@ -100,6 +102,7 @@ class EUNlgService:
             CPHICroatianResource(),
             CPHIRussianResource(),
             CPHIEstonianResource(),
+            CPHISlovenianResource(),
             ENVEnglishResource(),
             ENVFinnishResource(),
             HealthCostEnglishResource(),
@@ -163,6 +166,7 @@ class EUNlgService:
                     "de": GermanEUDateRealizer(),
                     "ru": RussianEUDateRealizer(),
                     "ee": EstonianEUDateRealizer(),
+                    "sl": SlovenianEUDateRealizer(),
                 }
             )
             yield EUEntityNameResolver()

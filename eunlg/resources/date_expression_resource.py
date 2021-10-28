@@ -133,3 +133,25 @@ ESTONIAN: Dict[str, Union[Val, Dict[str, Val]]] = {
     "month-year-expression": "{month} {year}",
     "year-expression": "{year}. aastal",
 }
+
+SLOVENIAN: Dict[str, Union[Val, Dict[str, Val]]] = {
+    "month": {
+        "01": "januarja",
+        "02": "februarja",
+        "03": "marca",
+        "04": "aprila",
+        "05": "maja",
+        "06": "junija",
+        "07": "julija",
+        "08": "avgusta",
+        "09": "septembra",
+        "10": "oktobra",
+        "11": "novembra",
+        "12": "decembra",
+        "reference_options": "isti mesec",
+    },
+    "year": {"reference_options": "isto leto"},
+    "month-expression": "{month}",
+    "month-year-expression": "{month} {year}",
+    "year-expression": "{year}",
+}
