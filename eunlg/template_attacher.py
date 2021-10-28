@@ -41,9 +41,14 @@ class TemplateAttacher(NLGPipelineComponent):
         number_realizer = EUNumberRealizer()
         entity_name_resolver = EUEntityNameResolver()
 
-        original_log_level = log.level
-        log.info(f"Setting log level to WARNING (={logging.WARNING}) temporarily (was {original_log_level})")
-        log.setLevel(logging.WARNING)
+        root_logger = logging.getLogger()
+        original_log_level = root_logger.level
+        log.info(
+            f"Setting root log level to WARNING (={logging.WARNING}) temporarily (was {original_log_level}), "
+            f"because we're going to produce hella spam by running the first half of the pipeline at least a few "
+            f"thousand times."
+        )
+        root_logger.setLevel(logging.WARNING)
         # i = 0
         # start = time.time()
         for msg in itertools.chain(core_messages, expanded_messages):
@@ -54,6 +59,6 @@ class TemplateAttacher(NLGPipelineComponent):
             entity_name_resolver.run(registry, random, language, doc_plan)
             number_realizer.run(registry, random, language, doc_plan)
 
-        log.setLevel(original_log_level)
+        root_logger.setLevel(original_log_level)
         log.info(f"Log level restored to {original_log_level}")
         return core_messages, expanded_messages
