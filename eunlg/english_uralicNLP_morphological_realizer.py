@@ -42,7 +42,12 @@ class EnglishUralicNLPMorphologicalRealizer(LanguageSpecificMorphologicalRealize
         analysis = "{}+{}".format(analysis, case)
         log.debug("Modified analysis to {}".format(analysis))
 
-        modified_value = uralicApi.generate(analysis, "eng")[0][0]
+        generations = uralicApi.generate(analysis, "eng")
+        if not generations:
+            log.warning(f"Could not generate surface form for {analysis}")
+            return slot.value
+
+        modified_value = generations[0][0]
         log.debug("Realized value is {}".format(modified_value))
 
         return modified_value

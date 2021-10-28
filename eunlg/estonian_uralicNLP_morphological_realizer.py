@@ -8,6 +8,7 @@ from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
 
 log = logging.getLogger(__name__)
 
+
 class EstonianUralicNLPMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):
     def __init__(self):
         super().__init__("ee")
@@ -53,7 +54,12 @@ class EstonianUralicNLPMorphologicalRealizer(LanguageSpecificMorphologicalRealiz
         analysis = analysis[:gen_start_idx] + case + analysis[gen_start_idx + 4 :]  # 4 = 1 + len("Nom")
         log.debug("Modified analysis to {}".format(analysis))
 
-        modified_value = uralicApi.generate(analysis, "est")[0][0]
+        generations = uralicApi.generate(analysis, "est")
+        if not generations:
+            log.warning(f"Could not generate surface form for {analysis}")
+            return slot.value
+
+        modified_value = generations[0][0]
         log.debug("Realized value is {}".format(modified_value))
 
         return modified_value
