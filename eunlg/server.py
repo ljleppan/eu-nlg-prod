@@ -33,7 +33,7 @@ formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(module)s - %(
 
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
-stream_handler.setLevel(logging.DEBUG)
+stream_handler.setLevel(logging.INFO)
 
 rotating_file_handler = logging.handlers.RotatingFileHandler(
     Path(__file__).parent / ".." / "reporter.log",
@@ -59,6 +59,7 @@ with open(Path(__file__).parent / ".." / "swagger.yaml", "r") as file_handle:
 app.install(
     SwaggerPlugin(swagger_def, serve_swagger_ui=True, swagger_ui_suburl="/documentation/", validate_requests=False)
 )
+
 
 # Allow for trailing slash in request URLS
 @app.hook("before_request")

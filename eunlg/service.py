@@ -21,12 +21,19 @@ from croatian_simple_morpological_realizer import CroatianSimpleMorphologicalRea
 from english_uralicNLP_morphological_realizer import EnglishUralicNLPMorphologicalRealizer
 from russian_morphological_realizer import RussianMorphologicalRealizer
 from eu_context_sim_document_planner import EUContextSimHeadlineDocumentPlanner, EUContextSimBodyDocumentPlanner
-from eu_date_realizer import CroatianEUDateRealizer, EnglishEUDateRealizer, FinnishEUDateRealizer, GermanEUDateRealizer, RussianEUDateRealizer
+from eu_date_realizer import (
+    CroatianEUDateRealizer,
+    EnglishEUDateRealizer,
+    FinnishEUDateRealizer,
+    GermanEUDateRealizer,
+    RussianEUDateRealizer,
+)
 from eu_document_planner import EUBodyDocumentPlanner, EUHeadlineDocumentPlanner
 from eu_early_stop_document_planner import EUEarlyStopHeadlineDocumentPlanner, EUEarlyStopBodyDocumentPlanner
 from eu_importance_allocator import EUImportanceSelector
 from eu_message_generator import EUMessageGenerator, NoMessagesForSelectionException
 from eu_named_entity_resolver import EUEntityNameResolver
+from eu_neural_sim_document_planner import EUNeuralSimBodyDocumentPlanner
 from eu_newsworthiness_only_document_planner import EUScoreHeadlineDocumentPlanner, EUScoreBodyDocumentPlanner
 from eu_number_realizer import EUNumberRealizer
 from eu_random_document_planner import EURandomHeadlineDocumentPlanner, EURandomBodyDocumentPlanner
@@ -44,6 +51,8 @@ from resources.health_cost_english_resource import HealthCostEnglishResource
 from resources.health_cost_finnish_resource import HealthCostFinnishResource
 from resources.health_funding_english_resource import HealthFundingEnglishResource
 from resources.health_funding_finnish_resource import HealthFundingFinnishResource
+from template_attacher import TemplateAttacher
+from embedding_remover import EmbeddingRemover
 
 log = logging.getLogger(__name__)
 
@@ -127,6 +136,14 @@ class EUNlgService:
                 yield EUTopicSimHeadlineDocumentPlanner() if headline else EUTopicSimBodyDocumentPlanner()
             elif planner == "contextsim":
                 yield EUContextSimHeadlineDocumentPlanner() if headline else EUContextSimBodyDocumentPlanner()
+            elif planner == "neuralsim":
+                if headline:
+                    yield EUHeadlineDocumentPlanner()
+                else:
+                    yield TemplateAttacher()
+                    yield EUNeuralSimBodyDocumentPlanner()
+                    yield EmbeddingRemover()
+
             elif planner == "full":
                 yield EUHeadlineDocumentPlanner() if headline else EUBodyDocumentPlanner()
             else:
