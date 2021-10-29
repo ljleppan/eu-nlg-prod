@@ -42,14 +42,14 @@ sl-head: {location, case=loct} в {time, case=loct} {value_type} enaka kot v ZDA
 
 sl: [{time, case=loct}] {location} je {"imela", gendered=previous_word} {value, ord} največjo {value_type} v vseh opazovanih državah
 sl: [{time, case=loct}] {location} je {"imela", gendered=previous_word} {value, ord} največjo vrednost v vseh opazovanih državah
-sl-head: {time, case=loct} {location, case=gent} {value, ord} {value_type} največjo
+sl-head: {time, case=loct} {location} je {"imela", gendered=previous_word} {value, ord} največjo {value_type}
 | value_type = cphi:.*:rank.*, value_type != .*rank_reverse.*
 
 # RANK_REVERSE
 
 sl: [{time, case=loct}] {location} je {"imela", gendered=previous_word} {value, ord} najnižjo {value_type} v vseh opazovanih državah
 sl: [{time, case=loct}] {location} {"imela", gendered=previous_word} {value, ord} najnižjo vrednost v vseh opazovanih državah
-sl-head: {time, case=loct} {location, case=gent} {value, ord} {value_type} najnižjo
+sl-head: {time, case=loct} {location} je {"imela", gendered=previous_word} {value, ord} najnižjo {value_type}
 | value_type = cphi:.*:rank_reverse.*
 """  # noqa: E501
 
