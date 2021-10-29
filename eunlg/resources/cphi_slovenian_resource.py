@@ -6,22 +6,22 @@ from resources.tabular_data_resource import TabularDataResource
 TEMPLATES: str = """
 # PRESENT VALUE
 
-sl: [{time, case=loct}] {value_type} [v {location, case=loct}] je znašala {value} {unit}
-sl-head: v {location, case=loct} {time, case=loct} {value_type} znašala {value} {unit}
+sl: [{time, case=loct}] {value_type} [{location, case=loct}] je znašala {value} {unit}
+sl-head: {location, case=loct} {time, case=loct} {value_type} znašala {value} {unit}
 | value_type = cphi:.*, value_type != .*:rank.*, value_type != .*:comp_.*
 
 # SINGLE VALUE COMP EU
 
-sl: [{time, case=loct}] [v {location, case=loct}] je bila {value_type} {value} {unit} večja od povprečja EU
-sl-head: v {location, case=loct} {time, case=loct} je bila {value_type} {value} {unit} večja od povprečja EU
+sl: [{time, case=loct}] [{location, case=loct}] je bila {value_type} {value} {unit} večja od povprečja EU
+sl-head: {location, case=loct} {time, case=loct} je bila {value_type} {value} {unit} večja od povprečja EU
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value > 0
 
-sl: [{time, case=loct}] [v {location, case=loct}] je bila {value_type} za {value, abs} {unit} nižja od povprečja EU
-sl-head: v {location, case=loct} {time, case=loct} {value_type} za {value, abs} {unit} manjša od povprečja EU.
+sl: [{time, case=loct}] [{location, case=loct}] je bila {value_type} za {value, abs} {unit} nižja od povprečja EU
+sl-head: {location, case=loct} {time, case=loct} {value_type} za {value, abs} {unit} manjša od povprečja EU.
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value < 0
 
-sl: [{time, case=loct}] [v {location, case=loct}] {value_type} enaka povprečju EU
-sl-head: v {location, case=loct} {time, case=loct} {value_type} enaka povprečju EU
+sl: [{time, case=loct}] [{location, case=loct}] {value_type} enaka povprečju EU
+sl-head: {location, case=loct} {time, case=loct} {value_type} enaka povprečju EU
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value = 0.0
 
 # SINGLE VALUE COMP US
@@ -34,8 +34,8 @@ sl: [{time, case=loct}] [{location, case=loct}] je bila {value_type} za {value, 
 sl-head: v {location, case=loct} {time, case=loct}, {value_type} za {value, abs} {unit} manjša kot v ZDA
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value < 0
 
-sl: [{time, case=loct}] [v {location, case=loct}] {value_type} enaka kot v ZDA
-sl-head: v {location, case=loct} в {time, case=loct} {value_type} enaka kot v ZDA
+sl: [{time, case=loct}] [{location, case=loct}] {value_type} enaka kot v ZDA
+sl-head: {location, case=loct} в {time, case=loct} {value_type} enaka kot v ZDA
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value = 0.0
 
 # RANK
@@ -51,12 +51,12 @@ sl: [{time, case=loct}] {location} je {"imela", gendered=previous_word} {value, 
 sl: [{time, case=loct}] {location} {"imela", gendered=previous_word} {value, ord} najnižjo vrednost v vseh opazovanih državah
 sl-head: {time, case=loct} {location, case=gent} {value, ord} {value_type} najnižjo
 | value_type = cphi:.*:rank_reverse.*
-"""
+"""  # noqa: E501
 
 INDEX_CATEGORIES: Dict[str, str] = {
-    "hicp2015": "usklajenega indeksa cen življenjskih potrebščin", # usklajen indeks cen življenjskih potrebščin (2015=100)
-    "rt1": "mesečna stopnja rasti",  # mesečna stopnja rasti v obdobju (t/t-1)
-    "rt12": "letna stopnja rasti",  # stopnja rasti (t/t-12)
+    "hicp2015": "usklajenega indeksa cen življenjskih potrebščin",
+    "rt1": "mesečna stopnja rasti",
+    "rt12": "letna stopnja rasti",
     "cp-hi00": "'vsi izdelki'",
     "cp-hi01": "'hrana in brezalkoholne pijače'",
     "cp-hi02": "'alkoholne pijače in tobak'",
@@ -112,10 +112,7 @@ class SlovenianCphiRawRealizer(RegexRealizer):
 class SlovenianCphiChangeRealizer(RegexRealizer):
     def __init__(self, registry):
         super().__init__(
-            registry,
-            "sl",
-            r"^cphi:([^:]*):([^:]*):(rt12?)" + MAYBE_RANK_OR_COMP + "$",
-            "{2} od {0} za kategorijo {1}",
+            registry, "sl", r"^cphi:([^:]*):([^:]*):(rt12?)" + MAYBE_RANK_OR_COMP + "$", "{2} od {0} za kategorijo {1}",
         )
 
 

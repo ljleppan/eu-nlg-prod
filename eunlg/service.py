@@ -56,6 +56,7 @@ from resources.health_cost_english_resource import HealthCostEnglishResource
 from resources.health_cost_finnish_resource import HealthCostFinnishResource
 from resources.health_funding_english_resource import HealthFundingEnglishResource
 from resources.health_funding_finnish_resource import HealthFundingFinnishResource
+from slovene_simple_morpological_realizer import SlovenianSimpleMorphologicalRealizer
 from template_attacher import TemplateAttacher
 from embedding_remover import EmbeddingRemover
 
@@ -178,6 +179,7 @@ class EUNlgService:
                     "hr": CroatianSimpleMorphologicalRealizer(),
                     "ru": RussianMorphologicalRealizer(),
                     "ee": EstonianUralicNLPMorphologicalRealizer(),
+                    "sl": SlovenianSimpleMorphologicalRealizer(),
                 }
             )
             yield HeadlineHTMLSurfaceRealizer() if headline else BodyHTMLSurfaceRealizer()
