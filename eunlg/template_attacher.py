@@ -9,7 +9,15 @@ from core.pipeline import NLGPipelineComponent, LanguageSplitComponent
 from core.realize_slots import SlotRealizer
 from core.registry import Registry
 from core.template_selector import TemplateSelector
-from eu_date_realizer import EnglishEUDateRealizer, FinnishEUDateRealizer, CroatianEUDateRealizer, GermanEUDateRealizer
+from eu_date_realizer import (
+    EnglishEUDateRealizer,
+    FinnishEUDateRealizer,
+    CroatianEUDateRealizer,
+    GermanEUDateRealizer,
+    RussianEUDateRealizer,
+    EstonianEUDateRealizer,
+    SlovenianEUDateRealizer,
+)
 from eu_named_entity_resolver import EUEntityNameResolver
 from eu_number_realizer import EUNumberRealizer
 
@@ -36,6 +44,9 @@ class TemplateAttacher(NLGPipelineComponent):
                 "fi": FinnishEUDateRealizer(),
                 "hr": CroatianEUDateRealizer(),
                 "de": GermanEUDateRealizer(),
+                "ru": RussianEUDateRealizer(),
+                "ee": EstonianEUDateRealizer(),
+                "sl": SlovenianEUDateRealizer(),
             }
         )
         number_realizer = EUNumberRealizer()
