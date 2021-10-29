@@ -1,7 +1,5 @@
 # News generation from EU data
 
-Very much work-in-progress.
-
 ## Setup and Docker
 
 Build with
@@ -26,7 +24,17 @@ folder from the EuroStat source data.
 With the server running, browse to /documentation/ to view the Swagger API
 description.
 
+## Selecting a non-default document planner
+
+You can select a non-default document planner by supplying the `--planner <name>` 
+argument during startup. The most interesting of these is probably the `neuralsim` 
+variant, which uses the FinEst BERT model to determine information similarity. Note that
+using this planner
+1) significantly increases the generation times
+2) requires *much* more memory, with ~16 gigs recommended
+
 ## Development 
+
 ###Formatting, linting, etc.
 The project is set up for use of `isort`, `black` and `flake8`.
 

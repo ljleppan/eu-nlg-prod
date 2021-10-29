@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 from typing import List, Optional, Tuple
 
 from core.document_planner import BodyDocumentPlanner, HeadlineDocumentPlanner
@@ -20,18 +19,19 @@ NEW_PARAGRAPH_ABSOLUTE_THRESHOLD = 0.5
 SATELLITE_RELATIVE_THRESHOLD = 0.5
 SATELLITE_ABSOLUTE_THRESHOLD = 0.2
 
-
-MODEL_PATH = Path(__file__).parent / ".." / "models"
-MODELS = [
-    BertTokenizer.from_pretrained(MODEL_PATH / "finest-bert-pytorch"),
-    BertModel.from_pretrained(MODEL_PATH / "finest-bert-pytorch"),
-]
+MODELS = []
 COS = torch.nn.CosineSimilarity(dim=1, eps=1e-8)
 
 
 class EUNeuralSimBodyDocumentPlanner(BodyDocumentPlanner):
     def __init__(self) -> None:
         super().__init__(new_paragraph_absolute_threshold=NEW_PARAGRAPH_ABSOLUTE_THRESHOLD)
+
+        global MODELS  # This ain't nice, but it works for now
+        MODELS = [
+            BertTokenizer.from_pretrained("EMBEDDIA/finest-bert"),
+            BertModel.from_pretrained("EMBEDDIA/finest-bert"),
+        ]
 
     def select_next_nucleus(
         self, available_message: List[Message], selected_nuclei: List[Message]
