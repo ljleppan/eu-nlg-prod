@@ -5,7 +5,6 @@ from core.models import Slot, TemplateComponent
 from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
 
 VOWELS = "aeiouyAEIOUY"
 
@@ -54,9 +53,7 @@ LOC_MAP: Dict[str, str] = {
     "Združene države": "v Združenih državah",
 }
 
-
 REV_LOC = {v: k for k, v in LOC_MAP.items()}
-
 
 GENDER: Dict[str, str] = {
     "Evroobmočje (v tistem trenutku)": "nt",
