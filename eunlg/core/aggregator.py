@@ -4,7 +4,7 @@ from typing import List, Tuple
 
 from numpy.random import Generator
 
-from core.models import DocumentPlanNode, Literal, Message, Relation, Slot, Template, TemplateComponent
+from core.models import DocumentPlanNode, Literal, Message, Relation, Slot, Template, TemplateComponent, Fact
 from core.pipeline import NLGPipelineComponent
 from core.registry import Registry
 
@@ -167,8 +167,9 @@ class Aggregator(NLGPipelineComponent):
             return False
 
         if isinstance(c1, Slot) and isinstance(c2, Slot):
-            assert c1.fact is not None
-            assert c2.fact is not None
+
+            if not isinstance(c1.fact, Fact) or not isinstance(c2.fact, Fact):
+                return c1.value == c2.value
 
             # Aggregating numbers is a mess, and can easily lead to sentences like "The search found 114385 articles in
             # French and from the newspaper L oeuvre", which implies that there is a set of 114385 articles s.t. every
