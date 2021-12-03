@@ -6,42 +6,42 @@ from resources.tabular_data_resource import TabularDataResource
 TEMPLATES: str = """
 # PRESENT VALUE
 
-fi: [{location, case=ssa},] {value_type} oli {value} {unit} [{time, case=ssa}]
-fi: [{location, case=ssa},] se oli {value} {unit} [{time, case=ssa}]
+fi: [{location, case=ssa}] {value_type} oli {value} {unit} [{time, case=ssa}]
+fi: [{location, case=ssa}] se oli {value} {unit} [{time, case=ssa}]
 fi-head: {location, case=ssa}, {time, case=ssa}, {value_type} {value} {unit}
 | value_type = cphi:.*, value_type != .*:rank.*, value_type != .*:comp_.*
 
 # SINGLE VALUE COMP EU
 
-fi: [{location, case=ssa},] {value_type} oli {value} {unit} enemmän kuin EU:n keskiarvo [{time, case=ssa}]
-fi: [{location, case=ssa},] se oli {value} {unit} yli EU:n keskiarvon [{time, case=ssa}]
+fi: [{location, case=ssa}] {value_type} oli {value} {unit} enemmän kuin EU:n keskiarvo [{time, case=ssa}]
+fi: [{location, case=ssa}] se oli {value} {unit} yli EU:n keskiarvon [{time, case=ssa}]
 fi-head: {location, case=ssa}, {time, case=ssa}, {value_type} {value} {unit} yli EU:n keskiarvon
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value > 0
 
-fi: [{location, case=ssa},] {value_type} oli {value} {unit} vähemmän kuin EU:n keskiarvo [{time, case=ssa}]
-fi: [{location, case=ssa},] se oli {value} {unit} ali EU:n keskiarvon [{time, case=ssa}]
+fi: [{location, case=ssa}] {value_type} oli {value} {unit} vähemmän kuin EU:n keskiarvo [{time, case=ssa}]
+fi: [{location, case=ssa}] se oli {value} {unit} ali EU:n keskiarvon [{time, case=ssa}]
 fi-head: {location, case=ssa}, {time, case=ssa}, {value_type} {value} {unit} ali EU:n keskiarvon
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value < 0
 
-fi: [{location, case=ssa},] {value_type} oli sama kuin EU:n keskiarvo [{time, case=ssa}]
-fi: [{location, case=ssa},] se oli sama kuin EU:n keskiarvon [{time, case=ssa}]
+fi: [{location, case=ssa}] {value_type} oli sama kuin EU:n keskiarvo [{time, case=ssa}]
+fi: [{location, case=ssa}] se oli sama kuin EU:n keskiarvon [{time, case=ssa}]
 fi-head: {location, case=ssa}, {time, case=ssa}, {value_type} sama kuin EU:n keskiarvon
 | value_type = cphi:.*:comp_eu, value_type != .*:rank.*, value = 0.0
 
 # SINGLE VALUE COMP US
 
-fi: [{location, case=ssa},] {value_type} oli {value} {unit} enemmän kuin Yhdysvalloissa [{time, case=ssa}]
-fi: [{location, case=ssa},] se oli {value} {unit} enemmän kuin Yhdysvalloissa [{time, case=ssa}]
+fi: [{location, case=ssa}] {value_type} oli {value} {unit} enemmän kuin Yhdysvalloissa [{time, case=ssa}]
+fi: [{location, case=ssa}] se oli {value} {unit} enemmän kuin Yhdysvalloissa [{time, case=ssa}]
 fi-head: {location, case=ssa}, {time, case=ssa}, {value_type} oli {value} {unit} yli EU:n keskiarvon
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value > 0
 
-fi: [{location, case=ssa},] {value_type} oli {value, abs} {unit} vähemmän kuin Yhdysvalloissa [{time, case=ssa}]
-fi: [{location, case=ssa},] se oli {value, abs} {unit} vähemmän kuin Yhdysvalloissa [{time, case=ssa}]
+fi: [{location, case=ssa}] {value_type} oli {value, abs} {unit} vähemmän kuin Yhdysvalloissa [{time, case=ssa}]
+fi: [{location, case=ssa}] se oli {value, abs} {unit} vähemmän kuin Yhdysvalloissa [{time, case=ssa}]
 fi-head: {location, case=ssa}, {time, case=ssa}, {value_type} {value} {unit} vähemmän kuin Yhdysvalloissa
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value < 0
 
-fi: [{location, case=ssa},] {value_type} oli sama kuin EU:n keskiarvo [{time, case=ssa}]
-fi: [{location, case=ssa},] se oli sama kuin EU:n keskiarvon [{time, case=ssa}]
+fi: [{location, case=ssa}] {value_type} oli sama kuin EU:n keskiarvo [{time, case=ssa}]
+fi: [{location, case=ssa}] se oli sama kuin EU:n keskiarvon [{time, case=ssa}]
 fi-head: {location, case=ssa}, {time, case=ssa}, {value_type} sama kuin EU:n keskiarvon
 | value_type = cphi:.*:comp_us, value_type != .*:rank.*, value = 0.0
 
