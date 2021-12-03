@@ -241,7 +241,7 @@ class EUNlgService:
         return list({language for resource in self.resources for language in resource.supported_languages})
 
     def run_pipeline(
-        self, language: str, dataset: str, location: str, location_type: str, previous_location: str
+        self, language: str, dataset: str, location: str, location_type: str, previous_location: Optional[str]
     ) -> Tuple[str, str]:
         log.info("Running headline NLG pipeline")
         try:
