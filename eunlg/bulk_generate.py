@@ -46,10 +46,12 @@ def generate(
                         print("      {} ({}/{})".format(location, location_idx + 1, len(filtered_locations)))
                     try:
                         start = datetime.datetime.now().timestamp()
-                        head, body = service.run_pipeline(language, dataset, location, "country")
+                        head, body = service.run_pipeline(language, dataset, location, "country", None)
                         end = datetime.datetime.now().timestamp()
                         out_path = out_dir / "{}-{}-{}-{}.txt".format(variant, language, dataset, location)
                         with out_path.open("w") as file_handle:
+                            file_handle.write(head)
+                            file_handle.write("\n")
                             file_handle.write(body)
                             file_handle.write("\n")
                             if verbose:
