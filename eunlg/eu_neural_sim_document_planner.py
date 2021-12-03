@@ -9,9 +9,9 @@ from transformers import BertTokenizer, BertModel
 
 log = logging.getLogger(__name__)
 
-MAX_PARAGRAPHS = 3
+MAX_PARAGRAPHS = 2
 
-MAX_SATELLITES_PER_NUCLEUS = 5
+MAX_SATELLITES_PER_NUCLEUS = 4
 MIN_SATELLITES_PER_NUCLEUS = 2
 
 NEW_PARAGRAPH_ABSOLUTE_THRESHOLD = 0.5
