@@ -138,24 +138,15 @@ class EUImportanceSelector(NLGPipelineComponent):
         timestamp_score = 20
         # importance of time
         if fact.timestamp_type == "year":
-            # For each year, the importance is simply 1 / diff,
-            # where diff is the difference between the next year (from now)
-            # and the year the fact discusses. That is, facts regarding
-            # the current year get a multiplier of 1, the year before that
-            # gets a multiplied of 0.5, the year before that 0.11... etc.
             timestamp_score *= min(1, (1 / (datetime.datetime.now().year + 1 - int(fact.timestamp)) ** 2))
             timestamp_score *= 2
         elif fact.timestamp_type == "month":
-            # For months, the penalty is scaled linearly between the multipliers
-            # of the year it belongs to and the previous year. The notable
-            # complication here is that we consider the year to consists of 13
-            # months, so that (for example) the year 2020 is considered to be
-            # more newsworthy than the month 2020M12 by the same amount that
-            # 2020M12 is more newsworthy than 2020M11.
             year, month = fact.timestamp.split("M")
             this_year = min(1.0, (1 / (datetime.datetime.now().year + 1 - int(year))) ** 2)
             prev_year = min(1.0, (1 / (datetime.datetime.now().year + 1 - (int(year) - 1))) ** 2)
-            month_effect = (this_year - prev_year) / (int(month) + 1)
+            delta = this_year - prev_year
+            delta_per_month = delta / 13
+            month_effect = delta_per_month * (13 - int(month))
             timestamp_score *= this_year - month_effect
         # total importance score
         message_score = where_type_score * what_score * timestamp_score
