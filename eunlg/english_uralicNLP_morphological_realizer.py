@@ -9,14 +9,15 @@ from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
 log = logging.getLogger(__name__)
 
 
+if not uralicApi.is_language_installed("eng"):
+    uralicApi.download("eng")
+
+
 class EnglishUralicNLPMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):
     def __init__(self):
         super().__init__("en")
 
         self.case_map: Dict[str, str] = {"genitive": "GEN"}
-
-        if not uralicApi.is_language_installed("eng"):
-            uralicApi.download("eng")
 
     def realize(self, slot: Slot, left_context: List[TemplateComponent], right_context: List[TemplateComponent]) -> str:
         case: Optional[str] = slot.attributes.get("case")

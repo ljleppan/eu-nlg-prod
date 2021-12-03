@@ -8,15 +8,15 @@ from core.morphological_realizer import LanguageSpecificMorphologicalRealizer
 
 log = logging.getLogger(__name__)
 
+if not uralicApi.is_language_installed("fin"):
+    uralicApi.download("fin")
+
 
 class FinnishUralicNLPMorphologicalRealizer(LanguageSpecificMorphologicalRealizer):
     def __init__(self):
         super().__init__("fi")
 
         self.case_map: Dict[str, str] = {"ssa": "Ine", "ssä": "Ine", "inessive": "Ine", "genitive": "Gen"}
-
-        if not uralicApi.is_language_installed("fin"):
-            uralicApi.download("fin")
 
     def realize(self, slot: Slot, left_context: List[TemplateComponent], right_context: List[TemplateComponent]) -> str:
         case: Optional[str] = slot.attributes.get("case")
