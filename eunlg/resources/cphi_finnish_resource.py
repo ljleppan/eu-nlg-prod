@@ -67,7 +67,7 @@ INDEX_CATEGORIES: Dict[str, str] = {
     "cp-hi00": "'kaikki osiot'",
     "cp-hi01": "'ruoka ja alkoholittomat juomat'",
     "cp-hi02": "'alkoholi ja tupakka'",
-    "cp-hi03": "'vaattete ja jalkineet'",
+    "cp-hi03": "'vaatteet ja jalkineet'",
     "cp-hi04": "'asuminen, vesi, sähkö ja lämmitys'",
     "cp-hi05": "'huonekalut, talousesineet ja kunnossapito'",
     "cp-hi06": "'terveys'",
