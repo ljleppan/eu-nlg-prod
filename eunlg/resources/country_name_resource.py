@@ -36,7 +36,7 @@ CROATIAN: Dict[str, str] = {
     "SE": "Švedska",
     "UK": "Velika Britanija",
     "IS": "Island",
-    "NE": "Norveška",
+    "NO": "Norveška",
     "CH": "Švicarska",
     "MK": "Sjeverna Makedonija",
     "RS": "Srbija",
