@@ -111,17 +111,45 @@ class Aggregator(NLGPipelineComponent):
         # TODO: Re-implement this
         raise NotImplementedError
 
-    def _same_prefix(self, first: Message, second: Message) -> bool:
+    def _get_combinable_prefix(self, first: Message, second: Message):
         try:
-            if first.template.components[0].value == second.template.components[0].value:
-                log.debug("Shared prefix")
-                return True
-            else:
-                log.debug("No shared prefix")
-                return False
+            getattr(first.template, "components")
+            getattr(second.template, "components")
         except AttributeError:
-            log.debug("AttributeError, assuming no shared prefix")
+            return []
+
+        shared_prefix = []
+
+        for m1_component, m2_component in zip(first.template.components, second.template.components):
+            if self._are_same(m1_component, m2_component):
+                shared_prefix.append(m1_component)
+            else:
+                break
+
+        # This is a special case: "The search found 114385 articles in French." followed by
+        # "The search found 114385 articles from the newspaper L oeuvre." should aggregate as
+        # "The search found 14385 articles in French and 14385 articles from the newspaper L oeuvre"
+        # despite there being no slots in the shared prefix. We identify this case by checking whether the component
+        # following the prefix, in both templates, is a result_value slot.
+        # We might be able to relax this to "any slot", but that requires a bunch more checking.
+        # TODO: Check above.
+        m1_following = first.template.components[len(shared_prefix)]
+        m2_following = second.template.components[len(shared_prefix)]
+        print(f"NEXT COMPONENTS: {m1_following} and {m2_following}")
+        if isinstance(m1_following, Slot) and isinstance(m2_following, Slot):
+            if m1_following.slot_type == "result_value" and m2_following.slot_type == "result_value":
+                return shared_prefix
+
+        # The standard case: the prefix must terminate in a slot. Due to self._are_same above, the prefix can't ever
+        # contain a result_value slot, so no need to special case that.
+        while shared_prefix and type(shared_prefix[-1]) != Slot:
+            shared_prefix = shared_prefix[:-1]
+        return shared_prefix
+
+    def _same_prefix(self, first: Message, second: Message) -> bool:
+        if first is None or second is None:
             return False
+        return len(self._get_combinable_prefix(first, second)) > 0
 
     def _has_implicit_time(self, message: Message) -> bool:
         return not message.template.has_slot_of_type("time")
@@ -131,15 +159,9 @@ class Aggregator(NLGPipelineComponent):
         log.debug("\t{}".format([c.value for c in first.template.components]))
         log.debug("\t{}".format([c.value for c in second.template.components]))
 
+        shared_prefix = self._get_combinable_prefix(first, second)
+        log.debug(f"Shared prefix is {[e.value for e in shared_prefix]}")
         combined = [c for c in first.template.components]
-        # TODO: 'idx' and 'other_component' are left uninitialized if second.template.components is empty.
-        for idx, other_component in enumerate(second.template.components):
-            if idx >= len(combined):
-                break
-            this_component = combined[idx]
-
-            if not self._are_same(this_component, other_component):
-                break
 
         # TODO At the moment everything is considered either positive or negative, which is sometimes weird.
         #  Add neutral sentences.
@@ -151,7 +173,7 @@ class Aggregator(NLGPipelineComponent):
             combined.append(Literal(conjunctions.get("inverse_combiner", "MISSING-INVERSE-CONJUCTION")))
         else:
             combined.append(Literal(conjunctions.get("default_combiner", "MISSING-DEFAULT-CONJUCTION")))
-        combined.extend(second.template.components[idx:])
+        combined.extend(second.template.components[len(shared_prefix) :])
         log.debug("Combined thing is {}".format([c.value for c in combined]))
         new_message = Message(
             facts=first.facts + [fact for fact in second.facts if fact not in first.facts],
