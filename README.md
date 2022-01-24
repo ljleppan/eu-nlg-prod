@@ -36,6 +36,7 @@ using this planner
 ## Development 
 
 ###Formatting, linting, etc.
+
 The project is set up for use of `isort`, `black` and `flake8`.
 
 It's notable that `isort` is only used to order the imports (something black
