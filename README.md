@@ -52,3 +52,9 @@ You can run
  $ pre-commit install
 ```
 to force git to run both black and flake8 for you before it allows you to commit.
+
+## License
+
+For licensing/copyright information on the Eurostat datasets, and limitations on the commercial use of specific subsets of that data, see https://ec.europa.eu/eurostat/about/policies/copyright
+
+The code contained in this repository is licensed as described in the LICENSE file.
